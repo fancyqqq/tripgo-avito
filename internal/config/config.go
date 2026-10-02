@@ -8,7 +8,7 @@ import (
 )
 
 type Config struct {
-	LogLevel        string        `env:"LOG_LEVEL, required, notEmpty"`
+	LogLevel        string        `env:"LOG_LEVEL,required,notEmpty"`
 	ShutdownTimeout time.Duration `env:"SHUTDOWN_TIMEOUT" envDefault:"10s"`
 
 	HTTP     HTTPConfig
@@ -16,14 +16,14 @@ type Config struct {
 }
 
 type HTTPConfig struct {
-	Addr              string        `env:"HTTP_ADDR, required, notEmpty"`
+	Addr              string        `env:"HTTP_ADDR,required,notEmpty"`
 	ReadTimeout       time.Duration `env:"HTTP_READ_TIMEOUT" envDefault:"10s"`
 	ReadHeaderTimeout time.Duration `env:"HTTP_READ_HEADER_TIMEOUT" envDefault:"5s"`
 	WriteTimeout      time.Duration `env:"HTTP_WRITE_TIMEOUT" envDefault:"30s"`
 	IdleTimeout       time.Duration `env:"HTTP_IDLE_TIMEOUT" envDefault:"60s"`
 }
 type DatabaseConfig struct {
-	URL             string        `env:"DATABASE_URL, required, notEmpty"`
+	URL             string        `env:"DATABASE_URL,required,notEmpty"`
 	MaxConns        int32         `env:"DATABASE_MAX_CONNS" envDefault:"10"`
 	MinConns        int32         `env:"DATABASE_MIN_CONNS" envDefault:"2"`
 	MaxConnLifetime time.Duration `env:"DATABASE_MAX_CONN_LIFETIME" envDefault:"30m"`
