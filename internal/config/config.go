@@ -2,126 +2,77 @@ package config
 
 import (
 	"fmt"
-	"os"
-	"strconv"
 	"time"
+
+	"github.com/caarlos0/env/v11"
 )
 
 type Config struct {
-	HTTPAddr        string
-	LogLevel        string
-	ShutdownTimeout time.Duration
+	LogLevel        string        `env:"LOG_LEVEL, required, notEmpty"`
+	ShutdownTimeout time.Duration `env:"SHUTDOWN_TIMEOUT" envDefault:"10s"`
 
+	HTTP     HTTPConfig
 	Database DatabaseConfig
 }
 
+type HTTPConfig struct {
+	Addr              string        `env:"HTTP_ADDR, required, notEmpty"`
+	ReadTimeout       time.Duration `env:"HTTP_READ_TIMEOUT" envDefault:"10s"`
+	ReadHeaderTimeout time.Duration `env:"HTTP_READ_HEADER_TIMEOUT" envDefault:"5s"`
+	WriteTimeout      time.Duration `env:"HTTP_WRITE_TIMEOUT" envDefault:"30s"`
+	IdleTimeout       time.Duration `env:"HTTP_IDLE_TIMEOUT" envDefault:"60s"`
+}
 type DatabaseConfig struct {
-	URL             string
-	MaxConns        int32
-	MinConns        int32
-	MaxConnLifetime time.Duration
-	ConnectTimeout  time.Duration
-	QueryTimeout    time.Duration
+	URL             string        `env:"DATABASE_URL, required, notEmpty"`
+	MaxConns        int32         `env:"DATABASE_MAX_CONNS" envDefault:"10"`
+	MinConns        int32         `env:"DATABASE_MIN_CONNS" envDefault:"2"`
+	MaxConnLifetime time.Duration `env:"DATABASE_MAX_CONN_LIFETIME" envDefault:"30m"`
+	ConnectTimeout  time.Duration `env:"DATABASE_CONNECT_TIMEOUT" envDefault:"5s"`
+	QueryTimeout    time.Duration `env:"DATABASE_QUERY_TIMEOUT" envDefault:"3s"`
 }
 
 func Load() (Config, error) {
-	httpAddr, err := getRequiredEnv("HTTP_ADDR")
+	cfg, err := env.ParseAs[Config]()
 	if err != nil {
-		return Config{}, err
+		return Config{}, fmt.Errorf("parse config: %w", err)
 	}
 
-	logLevel, err := getRequiredEnv("LOG_LEVEL")
-	if err != nil {
-		return Config{}, err
+	if err := cfg.Validate(); err != nil {
+		return Config{}, fmt.Errorf("validate config: %w", err)
 	}
 
-	shutdownTimeout, err := getDurationEnv("SHUTDOWN_TIMEOUT")
-	if err != nil {
-		return Config{}, err
-	}
-
-	databaseURL, err := getRequiredEnv("DATABASE_URL")
-	if err != nil {
-		return Config{}, err
-	}
-
-	maxConns, err := getInt32Env("DATABASE_MAX_CONNS")
-	if err != nil {
-		return Config{}, err
-	}
-
-	minConns, err := getInt32Env("DATABASE_MIN_CONNS")
-	if err != nil {
-		return Config{}, err
-	}
-
-	maxConnLifetime, err := getDurationEnv("DATABASE_MAX_CONN_LIFETIME")
-	if err != nil {
-		return Config{}, err
-	}
-
-	connectTimeout, err := getDurationEnv("DATABASE_CONNECT_TIMEOUT")
-	if err != nil {
-		return Config{}, err
-	}
-
-	queryTimeout, err := getDurationEnv("DATABASE_QUERY_TIMEOUT")
-	if err != nil {
-		return Config{}, err
-	}
-
-	return Config{
-		HTTPAddr:        httpAddr,
-		LogLevel:        logLevel,
-		ShutdownTimeout: shutdownTimeout,
-		Database: DatabaseConfig{
-			URL:             databaseURL,
-			MaxConns:        maxConns,
-			MinConns:        minConns,
-			MaxConnLifetime: maxConnLifetime,
-			ConnectTimeout:  connectTimeout,
-			QueryTimeout:    queryTimeout,
-		},
-	}, nil
+	return cfg, nil
 }
 
-func getRequiredEnv(key string) (string, error) {
-	value, ok := os.LookupEnv(key)
-	if !ok || value == "" {
-		return "", fmt.Errorf("%s is required", key)
+func (c Config) Validate() error {
+	if c.Database.MaxConns <= 0 {
+		return fmt.Errorf("DATABASE_MAX_CONNS must be greater than zero")
 	}
 
-	return value, nil
-}
-
-func getDurationEnv(key string) (time.Duration, error) {
-	value, err := getRequiredEnv(key)
-	if err != nil {
-		return 0, err
+	if c.Database.MinConns < 0 {
+		return fmt.Errorf("DATABASE_MIN_CONNS must not be negative")
 	}
 
-	duration, err := time.ParseDuration(value)
-	if err != nil {
-		return 0, fmt.Errorf("parse %s: %w", key, err)
+	if c.Database.MinConns > c.Database.MaxConns {
+		return fmt.Errorf("DATABASE_MIN_CONNS must not exceed DATABASE_MAX_CONNS")
 	}
 
-	if duration <= 0 {
-		return 0, fmt.Errorf("%s must be greater than zero", key)
+	durations := map[string]time.Duration{
+		"SHUTDOWN_TIMEOUT":           c.ShutdownTimeout,
+		"HTTP_READ_TIMEOUT":          c.HTTP.ReadTimeout,
+		"HTTP_READ_HEADER_TIMEOUT":   c.HTTP.ReadHeaderTimeout,
+		"HTTP_WRITE_TIMEOUT":         c.HTTP.WriteTimeout,
+		"HTTP_IDLE_TIMEOUT":          c.HTTP.IdleTimeout,
+		"DATABASE_QUERY_TIMEOUT":     c.Database.QueryTimeout,
+		"DATABASE_CONNECT_TIMEOUT":   c.Database.ConnectTimeout,
+		"DATABASE_MAX_CONN_LIFETIME": c.Database.MaxConnLifetime,
 	}
 
-	return duration, nil
-}
-
-func getInt32Env(key string) (int32, error) {
-	value, err := getRequiredEnv(key)
-	if err != nil {
-		return 0, err
+	for name, duration := range durations {
+		if duration <= 0 {
+			return fmt.Errorf("%s must be greater than zero", name)
+		}
 	}
 
-	num, err := strconv.ParseInt(value, 10, 32)
-	if err != nil {
-		return 0, fmt.Errorf("parse %s: %w", key, err)
-	}
-
-	return int32(num), nil
+	return nil
 }
