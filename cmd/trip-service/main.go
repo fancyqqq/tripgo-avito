@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -12,13 +13,20 @@ import (
 	"github.com/fancyqqq/tripgo-avito/api"
 	"github.com/fancyqqq/tripgo-avito/internal/config"
 	"github.com/fancyqqq/tripgo-avito/internal/handler"
+	"github.com/fancyqqq/tripgo-avito/internal/postgres"
 	"github.com/go-chi/chi/v5"
 )
 
 func main() {
+	if err := run(); err != nil {
+		log.Fatalf("fatal: %v", err)
+	}
+}
+
+func run() error {
 	cfg, err := config.Load()
 	if err != nil {
-		log.Fatalf("load config: %v", err)
+		return fmt.Errorf("load config: %w", err)
 	}
 
 	router := chi.NewRouter()
@@ -41,26 +49,38 @@ func main() {
 		syscall.SIGTERM)
 	defer stop()
 
+	pool, err := postgres.NewPool(ctx, cfg.Database)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+
+	serverErr := make(chan error, 1)
 	go func() {
 		err := server.ListenAndServe()
 
 		if err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Printf("http server error: %v", err)
+			serverErr <- err
 		}
 	}()
 
-	<-ctx.Done()
+	select {
+	case err := <-serverErr:
+		return fmt.Errorf("http server: %w", err)
+	case <-ctx.Done():
+		log.Println("shutdown signal received")
 
-	log.Println("shutdown signal received")
+		shutdownCtx, cancel := context.WithTimeout(
+			context.Background(),
+			cfg.ShutdownTimeout)
+		defer cancel()
 
-	shutdownCtx, cancel := context.WithTimeout(
-		context.Background(),
-		cfg.ShutdownTimeout)
-	defer cancel()
+		if err := server.Shutdown(shutdownCtx); err != nil {
+			_ = server.Close()
+			return fmt.Errorf("graceful shutdown timed out, forced close: %w", err)
+		}
 
-	if err := server.Shutdown(shutdownCtx); err != nil {
-		log.Printf("shutdown server: %v", err)
+		log.Println("server stopped gracefully")
 	}
-
-	log.Println("server stopped gracefully")
+	return nil
 }

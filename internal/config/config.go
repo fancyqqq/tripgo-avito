@@ -9,7 +9,7 @@ import (
 
 type Config struct {
 	LogLevel        string        `env:"LOG_LEVEL,required,notEmpty"`
-	ShutdownTimeout time.Duration `env:"SHUTDOWN_TIMEOUT" envDefault:"10s"`
+	ShutdownTimeout time.Duration `env:"SHUTDOWN_TIMEOUT,required,notEmpty"`
 
 	HTTP     HTTPConfig
 	Database DatabaseConfig
@@ -24,11 +24,11 @@ type HTTPConfig struct {
 }
 type DatabaseConfig struct {
 	URL             string        `env:"DATABASE_URL,required,notEmpty"`
-	MaxConns        int32         `env:"DATABASE_MAX_CONNS" envDefault:"10"`
-	MinConns        int32         `env:"DATABASE_MIN_CONNS" envDefault:"2"`
-	MaxConnLifetime time.Duration `env:"DATABASE_MAX_CONN_LIFETIME" envDefault:"30m"`
-	ConnectTimeout  time.Duration `env:"DATABASE_CONNECT_TIMEOUT" envDefault:"5s"`
-	QueryTimeout    time.Duration `env:"DATABASE_QUERY_TIMEOUT" envDefault:"3s"`
+	MaxConns        int32         `env:"DATABASE_MAX_CONNS,required,notEmpty"`
+	MinConns        int32         `env:"DATABASE_MIN_CONNS,required,notEmpty"`
+	MaxConnLifetime time.Duration `env:"DATABASE_MAX_CONN_LIFETIME,required,notEmpty"`
+	ConnectTimeout  time.Duration `env:"DATABASE_CONNECT_TIMEOUT,required,notEmpty"`
+	QueryTimeout    time.Duration `env:"DATABASE_QUERY_TIMEOUT,required,notEmpty"`
 }
 
 func Load() (Config, error) {
