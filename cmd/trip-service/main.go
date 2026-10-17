@@ -29,20 +29,6 @@ func run() error {
 		return fmt.Errorf("load config: %w", err)
 	}
 
-	router := chi.NewRouter()
-	h := handler.New()
-
-	api.HandlerFromMux(h, router)
-
-	server := &http.Server{
-		Addr:              cfg.HTTP.Addr,
-		Handler:           router,
-		ReadTimeout:       cfg.HTTP.ReadTimeout,
-		ReadHeaderTimeout: cfg.HTTP.ReadHeaderTimeout,
-		WriteTimeout:      cfg.HTTP.WriteTimeout,
-		IdleTimeout:       cfg.HTTP.IdleTimeout,
-	}
-
 	ctx, stop := signal.NotifyContext(
 		context.Background(),
 		os.Interrupt,
@@ -54,6 +40,20 @@ func run() error {
 		return err
 	}
 	defer pool.Close()
+
+	router := chi.NewRouter()
+	h := handler.New(pool, cfg.Database.QueryTimeout)
+
+	api.HandlerFromMux(h, router)
+
+	server := &http.Server{
+		Addr:              cfg.HTTP.Addr,
+		Handler:           router,
+		ReadTimeout:       cfg.HTTP.ReadTimeout,
+		ReadHeaderTimeout: cfg.HTTP.ReadHeaderTimeout,
+		WriteTimeout:      cfg.HTTP.WriteTimeout,
+		IdleTimeout:       cfg.HTTP.IdleTimeout,
+	}
 
 	serverErr := make(chan error, 1)
 	go func() {
