@@ -20,7 +20,6 @@ type Handler struct {
 	txManager    *postgres.TxManager
 	trips        *repository.TripRepository
 	history      *repository.HistoryRepository
-	api.Unimplemented
 }
 
 func New(
@@ -38,6 +37,8 @@ func New(
 		history:      history,
 	}
 }
+
+var _ api.ServerInterface = (*Handler)(nil)
 
 func InvalidRequest(w http.ResponseWriter, r *http.Request, err error) {
 	writeProblem(w, r, http.StatusBadRequest, "invalid_request", "Invalid request", err.Error())
