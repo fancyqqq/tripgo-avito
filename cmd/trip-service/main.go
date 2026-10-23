@@ -14,6 +14,7 @@ import (
 	"github.com/fancyqqq/tripgo-avito/internal/config"
 	"github.com/fancyqqq/tripgo-avito/internal/handler"
 	"github.com/fancyqqq/tripgo-avito/internal/postgres"
+	"github.com/fancyqqq/tripgo-avito/internal/repository"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -37,14 +38,21 @@ func run() error {
 
 	pool, err := postgres.NewPool(ctx, cfg.Database)
 	if err != nil {
-		return err
+		return fmt.Errorf("init postgres: %w", err)
 	}
 	defer pool.Close()
 
-	router := chi.NewRouter()
-	h := handler.New(pool, cfg.Database.QueryTimeout)
+	txManager := postgres.NewTxManager(pool)
+	tripRepo := repository.NewTripRepository(pool, cfg.Database.QueryTimeout)
+	historyRepo := repository.NewHistoryRepository(pool, cfg.Database.QueryTimeout)
 
-	api.HandlerFromMux(h, router)
+	router := chi.NewRouter()
+	h := handler.New(pool, cfg.Database.QueryTimeout, txManager, tripRepo, historyRepo)
+
+	api.HandlerWithOptions(h, api.ChiServerOptions{
+		BaseRouter:       router,
+		ErrorHandlerFunc: handler.InvalidRequest,
+	})
 
 	server := &http.Server{
 		Addr:              cfg.HTTP.Addr,

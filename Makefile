@@ -23,6 +23,7 @@ generate:
 		-generate types,chi-server \
 		-package api \
 		-o api/api.gen.go \
+		-include-operation-ids createTrip,getTrip,finishTrip,health,ready \
 		$(OPENAPI_SPEC)
 
 test:
