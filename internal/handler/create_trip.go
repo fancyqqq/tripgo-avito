@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -16,8 +17,19 @@ import (
 )
 
 func (h *Handler) CreateTrip(w http.ResponseWriter, r *http.Request, params api.CreateTripParams) {
+	body, err := io.ReadAll(io.LimitReader(r.Body, 1<<20))
+	if err != nil {
+		writeProblem(w, r, http.StatusBadRequest, "invalid_request", "Invalid request", "cannot read request body")
+		return
+	}
+
+	if err := checkRequiredFields(body); err != nil {
+		writeProblem(w, r, http.StatusBadRequest, "invalid_request", "Invalid request", err.Error())
+		return
+	}
+
 	var req api.CreateTripJSONRequestBody
-	dec := json.NewDecoder(io.LimitReader(r.Body, 1<<20))
+	dec := json.NewDecoder(bytes.NewReader(body))
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(&req); err != nil {
 		writeProblem(w, r, http.StatusBadRequest, "invalid_request", "Invalid request", err.Error())
@@ -46,7 +58,7 @@ func (h *Handler) CreateTrip(w http.ResponseWriter, r *http.Request, params api.
 		StartedAt: time.Now().UTC().Truncate(time.Microsecond),
 	}
 
-	err := h.txManager.Do(r.Context(), func(ctx context.Context) error {
+	err = h.txManager.Do(r.Context(), func(ctx context.Context) error {
 		if err := h.trips.Create(ctx, trip); err != nil {
 			return err
 		}
@@ -57,27 +69,12 @@ func (h *Handler) CreateTrip(w http.ResponseWriter, r *http.Request, params api.
 		})
 	})
 	if errors.Is(err, domain.ErrDriverBusy) {
-		writeProblem(
-			w,
-			r,
-			http.StatusConflict,
-			"driver_busy",
-			"Driver busy",
-			"Driver already has an active trip",
-		)
+		writeProblem(w, r, http.StatusConflict, "driver_busy", "Driver busy", "Driver already has an active trip")
 		return
 	}
-
 	if err != nil {
 		log.Printf("create trip: %v", err)
-		writeProblem(
-			w,
-			r,
-			http.StatusInternalServerError,
-			"internal_error",
-			"Internal Server Error",
-			"Internal server error",
-		)
+		writeProblem(w, r, http.StatusInternalServerError, "internal_error", "Internal Server Error", "Internal server error")
 		return
 	}
 
@@ -113,4 +110,31 @@ func validateCoordinates(field string, c api.Coordinates) error {
 		return fmt.Errorf("%s.longitude must be between -180 and 180", field)
 	}
 	return nil
+}
+
+func checkRequiredFields(body []byte) error {
+	top, err := requireFields(body, "", "user_id", "driver_id", "start_point", "end_point", "price")
+	if err != nil {
+		return err
+	}
+	for _, p := range []string{"start_point", "end_point"} {
+		if _, err := requireFields(top[p], p+".", "latitude", "longitude"); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func requireFields(data []byte, prefix string, fields ...string) (map[string]json.RawMessage, error) {
+	var obj map[string]json.RawMessage
+	if err := json.Unmarshal(data, &obj); err != nil {
+		return nil, fmt.Errorf("%smust be a JSON object", prefix)
+	}
+	for _, f := range fields {
+		v, ok := obj[f]
+		if !ok || string(v) == "null" {
+			return nil, fmt.Errorf("%s%s is required", prefix, f)
+		}
+	}
+	return obj, nil
 }
