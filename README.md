@@ -45,6 +45,31 @@ make run
 | `make migrate-status` | показывает, какие миграции применены |
 | `make generate` | генерирует `api/api.gen.go` из контракта |
 | `make test` | `go test -race ./...` |
+| `make docker-build` | собирает образ `trip-service:lab1` |
+| `make docker-run` | запускает образ рядом с PostgreSQL из `tripgoctl` |
+
+## Запуск в Docker
+
+Образ собирается в две стадии (`deploy/Dockerfile`). На первой в образе `golang` собирается статический бинарь (`CGO_ENABLED=0`). На второй он копируется в `gcr.io/distroless/static-debian12:nonroot`: там нет исходников, Go, кеша модулей и даже шелла, а процесс запускается от пользователя `nonroot`. `.dockerignore` не пускает в контекст сборки `.git`, `.env`, `.tripgo/`, тесты и локальные файлы.
+
+Размер итогового образа: **XX МБ** (`docker images trip-service:lab1`).
+
+```bash
+make docker-build
+make migrate          # миграции накатываются с компьютера, контейнер их не запускает
+make docker-run
+curl -i localhost:8080/ready
+```
+
+Если `go mod download` внутри сборки не может достучаться до `proxy.golang.org`, передайте свой прокси модулей: `docker build -f deploy/Dockerfile --build-arg GOPROXY="$(go env GOPROXY)" -t trip-service:lab1 .`
+
+Контейнер берёт переменные из `.env`, но адрес базы в нём заменяется. В `.env` база записана как `localhost:21032`, а внутри контейнера `localhost` указывает на сам контейнер. Поэтому контейнер подключается к Docker-сети `kind`, в которой работает кластер `tripgoctl`, и ходит в PostgreSQL через узел кластера:
+
+```
+DATABASE_URL=postgres://tripgo:tripgo@tripgo-local-control-plane:30103/tripgo?sslmode=disable
+```
+
+`30103` это NodePort PostgreSQL для лабораторной 1. Если сервис уже запущен через `make run`, его нужно остановить: оба слушают порт 8080.
 
 ## Переменные окружения
 
@@ -79,6 +104,7 @@ make run
 cmd/trip-service/        main: чтение конфига, сборка зависимостей, запуск и остановка
 api/api.gen.go           сгенерированные типы и серверный интерфейс
 contracts/               копия контрактов курса, не редактируется
+deploy/Dockerfile        сборка образа сервиса
 migrations/              миграции goose
 internal/
   config/                чтение и проверка переменных окружения
@@ -200,4 +226,4 @@ curl -i localhost:8080/ready      # снова 200
 
 ## Что не сделано
 
-- Задания со звёздочкой: идемпотентность по `Idempotency-Key` и Dockerfile.
+- Задание со звёздочкой про идемпотентность по `Idempotency-Key`.
