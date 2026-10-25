@@ -1,4 +1,4 @@
-package postgres
+package transaction
 
 import (
 	"context"
@@ -17,15 +17,15 @@ type Querier interface {
 
 type txKey struct{}
 
-type TxManager struct {
+type Manager struct {
 	pool *pgxpool.Pool
 }
 
-func NewTxManager(pool *pgxpool.Pool) *TxManager {
-	return &TxManager{pool: pool}
+func New(pool *pgxpool.Pool) *Manager {
+	return &Manager{pool: pool}
 }
 
-func (m *TxManager) Do(ctx context.Context, fn func(ctx context.Context) error) error {
+func (m *Manager) Do(ctx context.Context, fn func(ctx context.Context) error) error {
 	if _, ok := ctx.Value(txKey{}).(pgx.Tx); ok {
 		return fn(ctx)
 	}
@@ -36,8 +36,7 @@ func (m *TxManager) Do(ctx context.Context, fn func(ctx context.Context) error) 
 	}
 
 	defer func() {
-		p := recover()
-		if p != nil {
+		if p := recover(); p != nil {
 			_ = tx.Rollback(ctx)
 			panic(p)
 		}
