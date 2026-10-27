@@ -135,7 +135,7 @@ func TestHandleInvalidBody(t *testing.T) {
 			wantDetail: "request body must be a JSON object",
 		},
 		{
-			name:       "missing price",
+			name: "missing price",
 			body: `{
 				"user_id": "11111111-1111-1111-1111-111111111111",
 				"driver_id": "22222222-2222-2222-2222-222222222222",

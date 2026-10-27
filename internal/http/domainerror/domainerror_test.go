@@ -10,6 +10,11 @@ import (
 	"github.com/fancyqqq/tripgo-avito/internal/http/domainerror"
 )
 
+const (
+	codeInvalidRequest = "invalid_request"
+	typeInvalidRequest = "https://tripgo.example/problems/invalid-request"
+)
+
 func TestProblem(t *testing.T) {
 	t.Parallel()
 
@@ -25,24 +30,24 @@ func TestProblem(t *testing.T) {
 			name:       "validation error",
 			err:        &trip.ValidationError{Field: "price", Reason: "must be >= 0"},
 			wantStatus: http.StatusBadRequest,
-			wantCode:   "invalid_request",
-			wantType:   "https://tripgo.example/problems/invalid-request",
+			wantCode:   codeInvalidRequest,
+			wantType:   typeInvalidRequest,
 			wantDetail: "price must be >= 0",
 		},
 		{
 			name:       "wrapped validation error",
 			err:        fmt.Errorf("create trip: %w", &trip.ValidationError{Field: "user_id", Reason: "must not be empty"}),
 			wantStatus: http.StatusBadRequest,
-			wantCode:   "invalid_request",
-			wantType:   "https://tripgo.example/problems/invalid-request",
+			wantCode:   codeInvalidRequest,
+			wantType:   typeInvalidRequest,
 			wantDetail: "user_id must not be empty",
 		},
 		{
 			name:       "invalid request",
 			err:        domainerror.InvalidRequest(errors.New("price is required")),
 			wantStatus: http.StatusBadRequest,
-			wantCode:   "invalid_request",
-			wantType:   "https://tripgo.example/problems/invalid-request",
+			wantCode:   codeInvalidRequest,
+			wantType:   typeInvalidRequest,
 			wantDetail: "price is required",
 		},
 		{

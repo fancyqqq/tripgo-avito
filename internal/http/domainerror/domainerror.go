@@ -45,11 +45,11 @@ func Problem(err error) (int, generated.Problem) {
 	}
 }
 
-func newProblem(status int, code, title, detail string) (int, generated.Problem) {
-	return status, generated.Problem{
+func newProblem(status int32, code, title, detail string) (int, generated.Problem) {
+	return int(status), generated.Problem{
 		Type:   "https://tripgo.example/problems/" + strings.ReplaceAll(code, "_", "-"),
 		Title:  title,
-		Status: int32(status),
+		Status: status,
 		Detail: &detail,
 		Code:   code,
 	}
