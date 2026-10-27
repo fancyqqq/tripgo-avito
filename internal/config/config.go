@@ -8,6 +8,7 @@ import (
 )
 
 type Config struct {
+	ServiceName     string        `env:"OTEL_SERVICE_NAME,required,notEmpty"`
 	LogLevel        string        `env:"LOG_LEVEL,required,notEmpty"`
 	ShutdownTimeout time.Duration `env:"SHUTDOWN_TIMEOUT,required,notEmpty"`
 
