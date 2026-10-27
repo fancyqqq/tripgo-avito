@@ -5,6 +5,9 @@ import (
 	"log/slog"
 	"net/http"
 
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
+
 	"github.com/fancyqqq/tripgo-avito/internal/http/domainerror"
 )
 
@@ -18,6 +21,9 @@ func Error(w http.ResponseWriter, r *http.Request, logger *slog.Logger, err erro
 	status, problem := domainerror.Problem(err)
 	if status >= http.StatusInternalServerError {
 		logger.ErrorContext(r.Context(), "request failed", "error", err)
+		span := trace.SpanFromContext(r.Context())
+		span.RecordError(err)
+		span.SetStatus(codes.Error, problem.Code)
 	}
 
 	instance := r.URL.Path

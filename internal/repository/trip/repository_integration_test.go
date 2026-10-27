@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -20,6 +21,14 @@ import (
 )
 
 const queryTimeout = 5 * time.Second
+
+type completedCounter struct {
+	n atomic.Int64
+}
+
+func (c *completedCounter) TripCompleted(context.Context) {
+	c.n.Add(1)
+}
 
 func newPool(t *testing.T) *pgxpool.Pool {
 	t.Helper()
@@ -258,7 +267,8 @@ func TestConcurrentFinishCompletesOnce(t *testing.T) {
 	tr := newTrip(t, uuid.New())
 	create(t, repo, pool, tr)
 
-	uc := finishusecase.New(repo, transaction.New(pool), now)
+	counter := &completedCounter{}
+	uc := finishusecase.New(repo, transaction.New(pool), counter, now)
 
 	const workers = 5
 	errs := make([]error, workers)
@@ -288,6 +298,9 @@ func TestConcurrentFinishCompletesOnce(t *testing.T) {
 	}
 	if succeeded != 1 {
 		t.Fatalf("succeeded = %d, want 1", succeeded)
+	}
+	if got := counter.n.Load(); got != 1 {
+		t.Fatalf("completed metric = %d, want 1", got)
 	}
 
 	var completedChanges int

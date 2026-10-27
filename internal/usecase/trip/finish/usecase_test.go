@@ -101,10 +101,11 @@ func TestExecute(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			repo := NewMocktripRepository(ctrl)
 			tx := NewMocktxManager(ctrl)
+			metrics := NewMocktripMetrics(ctrl)
 			id := uuid.New()
 			tt.setup(id, repo, tx)
 
-			got, err := finish.New(repo, tx, fixedAt).Execute(context.Background(), id)
+			got, err := finish.New(repo, tx, metrics, fixedAt).Execute(context.Background(), id)
 
 			if !errors.Is(err, tt.wantErr) {
 				t.Fatalf("error = %v, want %v", err, tt.wantErr)
@@ -122,6 +123,7 @@ func TestExecuteFinishesActiveTrip(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	repo := NewMocktripRepository(ctrl)
 	tx := NewMocktxManager(ctrl)
+	metrics := NewMocktripMetrics(ctrl)
 	id := uuid.New()
 	stored := activeTrip(id)
 
@@ -142,8 +144,9 @@ func TestExecuteFinishesActiveTrip(t *testing.T) {
 				return nil
 			}),
 	)
+	metrics.EXPECT().TripCompleted(gomock.Any())
 
-	got, err := finish.New(repo, tx, fixedAt).Execute(context.Background(), id)
+	got, err := finish.New(repo, tx, metrics, fixedAt).Execute(context.Background(), id)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

@@ -11,13 +11,14 @@ import (
 )
 
 type UseCase struct {
-	repo tripRepository
-	tx   txManager
-	now  func() time.Time
+	repo    tripRepository
+	tx      txManager
+	metrics tripMetrics
+	now     func() time.Time
 }
 
-func New(repo tripRepository, tx txManager, now func() time.Time) *UseCase {
-	return &UseCase{repo: repo, tx: tx, now: now}
+func New(repo tripRepository, tx txManager, metrics tripMetrics, now func() time.Time) *UseCase {
+	return &UseCase{repo: repo, tx: tx, metrics: metrics, now: now}
 }
 
 func (u *UseCase) Execute(ctx context.Context, id uuid.UUID) (trip.Trip, error) {
@@ -54,5 +55,6 @@ func (u *UseCase) Execute(ctx context.Context, id uuid.UUID) (trip.Trip, error) 
 		return trip.Trip{}, fmt.Errorf("finish trip: %w", err)
 	}
 
+	u.metrics.TripCompleted(ctx)
 	return finished, nil
 }

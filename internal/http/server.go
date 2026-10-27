@@ -41,11 +41,13 @@ func NewServer(
 	}
 }
 
-func (s *Server) Routes() http.Handler {
-	return generated.HandlerWithOptions(s, generated.ChiServerOptions{
-		BaseRouter:       chi.NewRouter(),
+func (s *Server) Routes() chi.Router {
+	router := chi.NewRouter()
+	generated.HandlerWithOptions(s, generated.ChiServerOptions{
+		BaseRouter:       router,
 		ErrorHandlerFunc: s.paramError,
 	})
+	return router
 }
 
 func (s *Server) CreateTrip(w http.ResponseWriter, r *http.Request, _ generated.CreateTripParams) {

@@ -94,9 +94,13 @@ func TestExecute(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			repo := NewMocktripRepository(ctrl)
 			tx := NewMocktxManager(ctrl)
+			metrics := NewMocktripMetrics(ctrl)
 			tt.setup(repo, tx)
+			if tt.wantErr == nil {
+				metrics.EXPECT().TripCreated(gomock.Any())
+			}
 
-			got, err := create.New(repo, tx, fixedAt).Execute(context.Background(), tt.input())
+			got, err := create.New(repo, tx, metrics, fixedAt).Execute(context.Background(), tt.input())
 
 			if tt.wantErr != nil {
 				if !errors.Is(err, tt.wantErr) {
@@ -120,6 +124,7 @@ func TestExecuteSavesTripAndHistory(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	repo := NewMocktripRepository(ctrl)
 	tx := NewMocktxManager(ctrl)
+	metrics := NewMocktripMetrics(ctrl)
 	in := validInput()
 
 	var saved trip.Trip
@@ -136,8 +141,9 @@ func TestExecuteSavesTripAndHistory(t *testing.T) {
 			change = c
 			return nil
 		})
+	metrics.EXPECT().TripCreated(gomock.Any())
 
-	got, err := create.New(repo, tx, fixedAt).Execute(context.Background(), in)
+	got, err := create.New(repo, tx, metrics, fixedAt).Execute(context.Background(), in)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -183,10 +189,11 @@ func TestExecuteValidationErrorSkipsRepository(t *testing.T) {
 	repo := NewMocktripRepository(ctrl)
 	tx := NewMocktxManager(ctrl)
 
+	metrics := NewMocktripMetrics(ctrl)
 	in := validInput()
 	in.Price = -1
 
-	_, err := create.New(repo, tx, fixedAt).Execute(context.Background(), in)
+	_, err := create.New(repo, tx, metrics, fixedAt).Execute(context.Background(), in)
 
 	var vErr *trip.ValidationError
 	if !errors.As(err, &vErr) {
