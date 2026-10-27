@@ -6,3 +6,7 @@
 bin/
 
 .DS_Store
+
+# Тесты и ручные проверки
+coverage.out
+trip.json

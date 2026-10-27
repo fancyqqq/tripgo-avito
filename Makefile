@@ -4,7 +4,7 @@ export
 MIGRATIONS_DIR := migrations
 OPENAPI_SPEC := contracts/openapi/trip-service.openapi.yaml
 
-.PHONY: run migrate migrate-down migrate-status generate docker-build docker-run lint fmt test
+.PHONY: run migrate migrate-down migrate-status generate docker-build docker-run lint fmt test test-integration cover
 
 run:
 	go run ./cmd/trip-service
@@ -43,4 +43,11 @@ fmt:
 	golangci-lint fmt ./...
 
 test:
-	go test -race ./...
+	go test -race -cover ./...
+
+test-integration:
+	go test -race -count=1 -tags integration ./...
+
+cover:
+	go test -coverpkg=./internal/usecase/...,./internal/domain/... -coverprofile=coverage.out ./internal/usecase/... ./internal/domain/...
+	go tool cover -func=coverage.out | tail -n 1
