@@ -3,6 +3,7 @@ package handler
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -37,6 +38,11 @@ func (h *Handler) CreateTrip(w http.ResponseWriter, r *http.Request, params api.
 		return
 	}
 
+	if err := dec.Decode(new(any)); err != io.EOF {
+		writeProblem(w, r, http.StatusBadRequest, "invalid_request", "Invalid request", "Request body must contain a single JSON object")
+		return
+	}
+
 	if err := validateTripData(req); err != nil {
 		writeProblem(w, r, http.StatusBadRequest, "invalid_request", "Invalid request", err.Error())
 		return
@@ -59,16 +65,46 @@ func (h *Handler) CreateTrip(w http.ResponseWriter, r *http.Request, params api.
 		StartedAt: time.Now().UTC().Truncate(time.Microsecond),
 	}
 
+	canonicalBody, err := json.Marshal(req)
+	if err != nil {
+		log.Printf("marshal create trip request: %v", err)
+		writeProblem(w, r, http.StatusInternalServerError, "internal_error", "Internal Server Error", "Internal server error")
+		return
+	}
+	requestHash := sha256.Sum256(canonicalBody)
+	status := http.StatusCreated
+
 	err = h.txManager.Do(r.Context(), func(ctx context.Context) error {
+		if params.IdempotencyKey != nil {
+			tripID, claimed, err := h.idempotency.Claim(ctx, *params.IdempotencyKey, requestHash[:])
+			if err != nil {
+				return err
+			}
+			if !claimed {
+				trip, err = h.trips.GetByID(ctx, tripID)
+				status = http.StatusOK
+				return err
+			}
+		}
 		if err := h.trips.Create(ctx, trip); err != nil {
 			return err
 		}
-		return h.history.Add(ctx, domain.StatusChange{
+		if err := h.history.Add(ctx, domain.StatusChange{
 			TripID:   trip.ID,
 			ToStatus: domain.StatusActive,
 			Reason:   "trip created",
-		})
+		}); err != nil {
+			return err
+		}
+		if params.IdempotencyKey != nil {
+			return h.idempotency.Complete(ctx, *params.IdempotencyKey, trip.ID)
+		}
+		return nil
 	})
+	if errors.Is(err, domain.ErrIdempotencyConflict) {
+		writeProblem(w, r, http.StatusConflict, "idempotency_conflict", "Idempotency conflict", "Idempotency-Key was already used with a different request body")
+		return
+	}
 	if errors.Is(err, domain.ErrDriverBusy) {
 		writeProblem(w, r, http.StatusConflict, "driver_busy", "Driver busy", "Driver already has an active trip")
 		return
@@ -80,7 +116,7 @@ func (h *Handler) CreateTrip(w http.ResponseWriter, r *http.Request, params api.
 	}
 
 	w.Header().Set("Location", "/api/v1/trips/"+trip.ID.String())
-	writeJSON(w, http.StatusCreated, toAPITrip(trip))
+	writeJSON(w, status, toAPITrip(trip))
 }
 
 func validateTripData(req api.TripData) error {

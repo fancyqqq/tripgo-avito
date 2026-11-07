@@ -31,12 +31,18 @@ type HistoryRepository interface {
 	Add(context.Context, domain.StatusChange) error
 }
 
+type IdempotencyRepository interface {
+	Claim(context.Context, uuid.UUID, []byte) (tripID uuid.UUID, claimed bool, err error)
+	Complete(context.Context, uuid.UUID, uuid.UUID) error
+}
+
 type Handler struct {
 	pinger       Pinger
 	queryTimeout time.Duration
 	txManager    TxManager
 	trips        TripRepository
 	history      HistoryRepository
+	idempotency  IdempotencyRepository
 }
 
 func New(
@@ -45,6 +51,7 @@ func New(
 	txManager TxManager,
 	trips TripRepository,
 	history HistoryRepository,
+	idempotency IdempotencyRepository,
 ) *Handler {
 	return &Handler{
 		pinger:       pinger,
@@ -52,6 +59,7 @@ func New(
 		txManager:    txManager,
 		trips:        trips,
 		history:      history,
+		idempotency:  idempotency,
 	}
 }
 

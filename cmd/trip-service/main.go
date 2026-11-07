@@ -45,9 +45,10 @@ func run() error {
 	txManager := postgres.NewTxManager(pool)
 	tripRepo := repository.NewTripRepository(pool, cfg.Database.QueryTimeout)
 	historyRepo := repository.NewHistoryRepository(pool, cfg.Database.QueryTimeout)
+	idempotencyRepo := repository.NewIdempotencyRepository(pool, cfg.Database.QueryTimeout)
 
 	router := chi.NewRouter()
-	h := handler.New(pool, cfg.Database.QueryTimeout, txManager, tripRepo, historyRepo)
+	h := handler.New(pool, cfg.Database.QueryTimeout, txManager, tripRepo, historyRepo, idempotencyRepo)
 
 	api.HandlerWithOptions(h, api.ChiServerOptions{
 		BaseRouter:       router,
