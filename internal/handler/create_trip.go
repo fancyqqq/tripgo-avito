@@ -32,7 +32,8 @@ func (h *Handler) CreateTrip(w http.ResponseWriter, r *http.Request, params api.
 	dec := json.NewDecoder(bytes.NewReader(body))
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(&req); err != nil {
-		writeProblem(w, r, http.StatusBadRequest, "invalid_request", "Invalid request", err.Error())
+		log.Printf("decode create trip request: %v", err)
+		writeProblem(w, r, http.StatusBadRequest, "invalid_request", "Invalid request", "Request body is invalid")
 		return
 	}
 

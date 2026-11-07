@@ -16,6 +16,11 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+const (
+	uniqueViolationCode    = "23505"
+	driverActiveConstraint = "trips_driver_active_uniq"
+)
+
 var psql = sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
 type TripRepository struct {
@@ -63,6 +68,11 @@ func scanTrip(row pgx.Row) (domain.Trip, error) {
 	}
 
 	trip.Status = domain.TripStatus(status)
+	trip.StartedAt = trip.StartedAt.UTC()
+	if trip.FinishedAt != nil {
+		finishedAt := trip.FinishedAt.UTC()
+		trip.FinishedAt = &finishedAt
+	}
 	return trip, nil
 }
 
@@ -95,7 +105,7 @@ func (r *TripRepository) Create(ctx context.Context, trip domain.Trip) error {
 	_, err = q.Exec(ctx, query, args...)
 
 	var pgErr *pgconn.PgError
-	if errors.As(err, &pgErr) && pgErr.Code == "23505" && pgErr.ConstraintName == "trips_driver_active_uniq" {
+	if errors.As(err, &pgErr) && pgErr.Code == uniqueViolationCode && pgErr.ConstraintName == driverActiveConstraint {
 		return domain.ErrDriverBusy
 	}
 

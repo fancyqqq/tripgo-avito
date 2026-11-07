@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -9,28 +10,44 @@ import (
 
 	"github.com/fancyqqq/tripgo-avito/api"
 	"github.com/fancyqqq/tripgo-avito/internal/domain"
-	"github.com/fancyqqq/tripgo-avito/internal/postgres"
-	"github.com/fancyqqq/tripgo-avito/internal/repository"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/google/uuid"
 )
 
+type Pinger interface {
+	Ping(context.Context) error
+}
+
+type TxManager interface {
+	Do(context.Context, func(context.Context) error) error
+}
+
+type TripRepository interface {
+	Create(context.Context, domain.Trip) error
+	GetByID(context.Context, uuid.UUID) (domain.Trip, error)
+	Finish(context.Context, uuid.UUID, time.Time) (domain.Trip, error)
+}
+
+type HistoryRepository interface {
+	Add(context.Context, domain.StatusChange) error
+}
+
 type Handler struct {
-	pool         *pgxpool.Pool
+	pinger       Pinger
 	queryTimeout time.Duration
-	txManager    *postgres.TxManager
-	trips        *repository.TripRepository
-	history      *repository.HistoryRepository
+	txManager    TxManager
+	trips        TripRepository
+	history      HistoryRepository
 }
 
 func New(
-	pool *pgxpool.Pool,
+	pinger Pinger,
 	queryTimeout time.Duration,
-	txManager *postgres.TxManager,
-	trips *repository.TripRepository,
-	history *repository.HistoryRepository,
+	txManager TxManager,
+	trips TripRepository,
+	history HistoryRepository,
 ) *Handler {
 	return &Handler{
-		pool:         pool,
+		pinger:       pinger,
 		queryTimeout: queryTimeout,
 		txManager:    txManager,
 		trips:        trips,
@@ -41,7 +58,8 @@ func New(
 var _ api.ServerInterface = (*Handler)(nil)
 
 func InvalidRequest(w http.ResponseWriter, r *http.Request, err error) {
-	writeProblem(w, r, http.StatusBadRequest, "invalid_request", "Invalid request", err.Error())
+	log.Printf("invalid request: %v", err)
+	writeProblem(w, r, http.StatusBadRequest, "invalid_request", "Invalid request", "Request parameters are invalid")
 }
 
 func writeJSON(w http.ResponseWriter, status int, body any) {

@@ -52,7 +52,7 @@ make run
 
 Образ собирается в две стадии (`deploy/Dockerfile`). На первой в образе `golang` собирается статический бинарь (`CGO_ENABLED=0`). На второй он копируется в `gcr.io/distroless/static-debian12:nonroot`: там нет исходников, Go, кеша модулей и даже шелла, а процесс запускается от пользователя `nonroot`. `.dockerignore` не пускает в контекст сборки `.git`, `.env`, `.tripgo/`, тесты и локальные файлы.
 
-Размер итогового образа: **XX МБ** (`docker images trip-service:lab1`).
+Размер итогового образа: **4.96 МБ** (`docker images trip-service:lab1`).
 
 ```bash
 make docker-build

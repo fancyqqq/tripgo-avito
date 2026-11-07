@@ -12,7 +12,7 @@ func (h *Handler) Ready(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), h.queryTimeout)
 	defer cancel()
 
-	if err := h.pool.Ping(ctx); err != nil {
+	if err := h.pinger.Ping(ctx); err != nil {
 		log.Printf("ping database: %v", err)
 		writeJSON(w, http.StatusServiceUnavailable, api.HealthResponse{Status: api.Unavailable})
 		return
