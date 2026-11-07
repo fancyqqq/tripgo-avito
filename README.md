@@ -20,11 +20,13 @@
 - Docker
 - [`tripgoctl`](https://github.com/course-go-autumn-2026/course-infra)
 - make
-- [golangci-lint](https://golangci-lint.run/) v2 для `make lint`
+- curl для автоматической установки golangci-lint
 - mockgen для `make generate`: `go install go.uber.org/mock/mockgen@latest`
 - psql, если нужно смотреть в базу руками
 
 goose и oapi-codegen отдельно ставить не нужно. Они подключены к модулю через `go get -tool` и запускаются как `go tool goose` и `go tool oapi-codegen`.
+
+Версия golangci-lint закреплена в Makefile: **v2.15.0**. При первом запуске `make lint` или `make fmt` нужный бинарь автоматически скачивается в `bin/golangci-lint/v2.15.0/`; для этого нужен доступ в интернет. Следующие запуски используют этот файл. Глобально установленный линтер не используется. Установка выполняется через [официальный скрипт golangci-lint](https://golangci-lint.run/docs/welcome/install/local/#binaries).
 
 ## Запуск
 
@@ -43,15 +45,17 @@ make run
 
 | Цель | Что делает |
 |---|---|
+| `make build` | собирает бинарь `bin/trip-service` |
 | `make run` | запускает сервис |
 | `make migrate` | накатывает миграции |
 | `make migrate-down` | откатывает все миграции |
 | `make migrate-status` | показывает, какие миграции применены |
 | `make generate` | генерирует `internal/generated/api.gen.go` из контракта и моки через `go generate` |
-| `make lint` | `golangci-lint run ./...` с конфигом курса |
-| `make fmt` | форматирует код (gofumpt, gci) |
+| `make lint` | запускает golangci-lint v2.15.0 с конфигом курса |
+| `make fmt` | форматирует код (gofumpt, gci) через golangci-lint v2.15.0 |
 | `make test` | unit-тесты с `-race` и покрытием, база не нужна |
 | `make test-integration` | все тесты вместе с интеграционными, нужна поднятая база |
+| `make test-mutation` | мутационное тестирование `domain` и `usecase` через Gremlins v0.6.0 |
 | `make cover` | суммарное покрытие пакетов `usecase` и `domain` |
 | `make docker-build` | собирает образ `trip-service:lab1` |
 | `make docker-run` | запускает образ рядом с PostgreSQL из `tripgoctl` |
@@ -192,6 +196,16 @@ DURATION=300 WORKERS=8 ./scripts/load.sh
 Интеграционные тесты помечены `//go:build integration` и запускаются через `make test-integration`. Адрес базы они берут из `DATABASE_URL`. Каждый тест удаляет за собой свои строки, так что запускать их можно на той же базе, что и сервис.
 
 Покрытие `usecase` и `domain` (`make cover`) — 100%.
+
+### Мутационное тестирование (задание со звёздочкой)
+
+```bash
+make test-mutation
+```
+
+Gremlins v0.6.0 автоматически устанавливается локально в `bin/` при первом запуске. Проверяются все подпакеты `internal/domain` и `internal/usecase`; база не нужна. JSON-отчёты записываются в `reports/mutation/latest/`.
+
+[Отчёт до и после с разбором](reports/mutation/README.md): 34 сгенерированных мутанта, из них 30 компилируемых убиты тестами, 4 не компилируются; выживших нет. Исходные JSON сохранены рядом с отчётом. Тесты уже обнаруживали проверенные изменения, поэтому между прогонами они не менялись. В отчёте отдельно описаны ошибка классификации Gremlins и ограничения набора операторов.
 
 Отдельно проверена гонка завершения. Пять горутин одновременно завершают одну поездку через настоящий usecase и настоящие транзакции. Успешно должна завершиться ровно одна, в истории должна появиться одна запись `completed`, счётчик метрики должен вырасти на один. Если убрать `FOR UPDATE` из `GetByIDForUpdate`, тест падает (`succeeded = 2, want 1`), значит, он действительно ловит эту гонку.
 
@@ -401,8 +415,3 @@ sum by (db_operation_name) (rate(db_client_operation_duration_seconds_sum{db_ope
 ```
 
 Откат миграций: `make migrate-down`, затем `make migrate`.
-
-## Что не сделано
-
-- Задание со звёздочкой ЛР1 про идемпотентность по `Idempotency-Key`.
-- Задание со звёздочкой ЛР2 про мутационное тестирование. Вручную проверено только одно место: тест на гонку завершения падает без `FOR UPDATE`.

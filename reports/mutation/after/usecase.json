@@ -1,0 +1,85 @@
+{
+  "go_module": "github.com/fancyqqq/tripgo-avito",
+  "files": [
+    {
+      "file_name": "trip/create/usecase.go",
+      "mutations": [
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 32,
+          "column": 40
+        },
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 27,
+          "column": 9
+        },
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 41,
+          "column": 9
+        }
+      ]
+    },
+    {
+      "file_name": "trip/finish/usecase.go",
+      "mutations": [
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 29,
+          "column": 10
+        },
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 34,
+          "column": 36
+        },
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 38,
+          "column": 40
+        },
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 47,
+          "column": 11
+        },
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 54,
+          "column": 9
+        }
+      ]
+    },
+    {
+      "file_name": "trip/get/usecase.go",
+      "mutations": [
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 22,
+          "column": 9
+        }
+      ]
+    }
+  ],
+  "test_efficacy": 100,
+  "mutations_coverage": 100,
+  "mutants_total": 9,
+  "mutants_killed": 9,
+  "mutants_lived": 0,
+  "mutants_not_viable": 0,
+  "mutants_not_covered": 0,
+  "elapsed_time": 1.910895389,
+  "mutator_statistics": {
+    "conditionals_negation": 9
+  }
+}

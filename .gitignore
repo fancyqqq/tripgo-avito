@@ -10,3 +10,6 @@ bin/
 # Тесты и ручные проверки
 coverage.out
 trip.json
+
+# Повторные прогоны; отчёты before/after хранятся в git
+reports/mutation/latest/

@@ -1,0 +1,7 @@
+unleash:
+  workers: 2
+  timeout-coefficient: 10
+
+mutants:
+  invert-logical:
+    enabled: true

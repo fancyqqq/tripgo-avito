@@ -1,0 +1,180 @@
+{
+  "go_module": "github.com/fancyqqq/tripgo-avito",
+  "files": [
+    {
+      "file_name": "trip/errors.go",
+      "mutations": [
+        {
+          "type": "ARITHMETIC_BASE",
+          "status": "KILLED",
+          "line": 17,
+          "column": 17
+        },
+        {
+          "type": "ARITHMETIC_BASE",
+          "status": "KILLED",
+          "line": 17,
+          "column": 23
+        }
+      ]
+    },
+    {
+      "file_name": "trip/trip.go",
+      "mutations": [
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 41,
+          "column": 12
+        },
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 44,
+          "column": 14
+        },
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 47,
+          "column": 47
+        },
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 50,
+          "column": 43
+        },
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 53,
+          "column": 11
+        },
+        {
+          "type": "CONDITIONALS_BOUNDARY",
+          "status": "KILLED",
+          "line": 53,
+          "column": 11
+        },
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 70,
+          "column": 14
+        },
+        {
+          "type": "INVERT_LOGICAL",
+          "status": "KILLED",
+          "line": 79,
+          "column": 22
+        },
+        {
+          "type": "CONDITIONALS_BOUNDARY",
+          "status": "KILLED",
+          "line": 79,
+          "column": 16
+        },
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 79,
+          "column": 16
+        },
+        {
+          "type": "ARITHMETIC_BASE",
+          "status": "KILLED",
+          "line": 79,
+          "column": 18
+        },
+        {
+          "type": "INVERT_NEGATIVES",
+          "status": "KILLED",
+          "line": 79,
+          "column": 18
+        },
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 79,
+          "column": 36
+        },
+        {
+          "type": "CONDITIONALS_BOUNDARY",
+          "status": "KILLED",
+          "line": 79,
+          "column": 36
+        },
+        {
+          "type": "ARITHMETIC_BASE",
+          "status": "KILLED",
+          "line": 80,
+          "column": 40
+        },
+        {
+          "type": "INVERT_LOGICAL",
+          "status": "KILLED",
+          "line": 82,
+          "column": 24
+        },
+        {
+          "type": "CONDITIONALS_BOUNDARY",
+          "status": "KILLED",
+          "line": 82,
+          "column": 17
+        },
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 82,
+          "column": 17
+        },
+        {
+          "type": "INVERT_NEGATIVES",
+          "status": "KILLED",
+          "line": 82,
+          "column": 19
+        },
+        {
+          "type": "ARITHMETIC_BASE",
+          "status": "KILLED",
+          "line": 82,
+          "column": 19
+        },
+        {
+          "type": "CONDITIONALS_BOUNDARY",
+          "status": "KILLED",
+          "line": 82,
+          "column": 39
+        },
+        {
+          "type": "ARITHMETIC_BASE",
+          "status": "KILLED",
+          "line": 83,
+          "column": 40
+        },
+        {
+          "type": "CONDITIONALS_NEGATION",
+          "status": "KILLED",
+          "line": 82,
+          "column": 39
+        }
+      ]
+    }
+  ],
+  "test_efficacy": 100,
+  "mutations_coverage": 100,
+  "mutants_total": 25,
+  "mutants_killed": 25,
+  "mutants_lived": 0,
+  "mutants_not_viable": 0,
+  "mutants_not_covered": 0,
+  "elapsed_time": 3.266029862,
+  "mutator_statistics": {
+    "arithmetic_base": 6,
+    "conditionals_negation": 10,
+    "conditionals_boundary": 5,
+    "invert_logical": 2,
+    "invert_negatives": 2
+  }
+}
