@@ -1,0 +1,11 @@
+.git
+.gitignore
+.env
+.env.*
+.tripgo
+.idea
+.vscode
+bin
+**/*_test.go
+trip.json
+README.md
