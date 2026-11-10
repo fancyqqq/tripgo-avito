@@ -13,7 +13,6 @@ import (
 	context "context"
 	reflect "reflect"
 
-	trip "github.com/fancyqqq/tripgo-avito/internal/domain/trip"
 	model "github.com/fancyqqq/tripgo-avito/internal/model"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -43,10 +42,10 @@ func (m *MockuseCase) EXPECT() *MockuseCaseMockRecorder {
 }
 
 // Execute mocks base method.
-func (m *MockuseCase) Execute(ctx context.Context, in model.CreateTrip) (trip.Trip, error) {
+func (m *MockuseCase) Execute(ctx context.Context, in model.CreateTrip) (model.CreateTripResult, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Execute", ctx, in)
-	ret0, _ := ret[0].(trip.Trip)
+	ret0, _ := ret[0].(model.CreateTripResult)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

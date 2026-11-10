@@ -2,7 +2,9 @@ package create_test
 
 import (
 	"context"
+	"crypto/sha256"
 	"errors"
+	"fmt"
 	"testing"
 	"time"
 
@@ -100,13 +102,13 @@ func TestExecute(t *testing.T) {
 				metrics.EXPECT().TripCreated(gomock.Any())
 			}
 
-			got, err := create.New(repo, tx, metrics, fixedAt).Execute(context.Background(), tt.input())
+			got, err := create.New(repo, nil, tx, metrics, fixedAt).Execute(context.Background(), tt.input())
 
 			if tt.wantErr != nil {
 				if !errors.Is(err, tt.wantErr) {
 					t.Fatalf("error = %v, want %v", err, tt.wantErr)
 				}
-				if got != (trip.Trip{}) {
+				if got != (model.CreateTripResult{}) {
 					t.Fatalf("expected zero trip on error, got %+v", got)
 				}
 				return
@@ -143,7 +145,7 @@ func TestExecuteSavesTripAndHistory(t *testing.T) {
 		})
 	metrics.EXPECT().TripCreated(gomock.Any())
 
-	got, err := create.New(repo, tx, metrics, fixedAt).Execute(context.Background(), in)
+	got, err := create.New(repo, nil, tx, metrics, fixedAt).Execute(context.Background(), in)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -161,10 +163,10 @@ func TestExecuteSavesTripAndHistory(t *testing.T) {
 	if got.ID == uuid.Nil {
 		t.Fatal("trip id is empty")
 	}
-	if got != want {
+	if got.Trip != want {
 		t.Fatalf("trip = %+v, want %+v", got, want)
 	}
-	if saved != got {
+	if saved != got.Trip {
 		t.Fatalf("saved trip = %+v, returned %+v", saved, got)
 	}
 
@@ -193,7 +195,7 @@ func TestExecuteValidationErrorSkipsRepository(t *testing.T) {
 	in := validInput()
 	in.Price = -1
 
-	_, err := create.New(repo, tx, metrics, fixedAt).Execute(context.Background(), in)
+	_, err := create.New(repo, nil, tx, metrics, fixedAt).Execute(context.Background(), in)
 
 	var vErr *trip.ValidationError
 	if !errors.As(err, &vErr) {
@@ -201,5 +203,66 @@ func TestExecuteValidationErrorSkipsRepository(t *testing.T) {
 	}
 	if vErr.Field != "price" {
 		t.Fatalf("field = %q, want %q", vErr.Field, "price")
+	}
+}
+
+func TestExecuteIdempotency(t *testing.T) {
+	t.Parallel()
+	const replayCase = "replay"
+	const claimErrorCase = "claim error"
+	const completeErrorCase = "complete error"
+	const readErrorCase = "read error"
+	const claimCase = "claim"
+	for _, name := range []string{claimCase, replayCase, "conflict", claimErrorCase, completeErrorCase, readErrorCase} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+			ctrl := gomock.NewController(t)
+			repo := NewMocktripRepository(ctrl)
+			tx := NewMocktxManager(ctrl)
+			metrics := NewMocktripMetrics(ctrl)
+			keys := NewMockidempotencyRepository(ctrl)
+			in := validInput()
+			key := uuid.New()
+			in.IdempotencyKey = &key
+			canonical := fmt.Sprintf(`{"driver_id":"%s","end_point":{"latitude":55.8,"longitude":37.7},"price":500,"start_point":{"latitude":55.75,"longitude":37.61},"user_id":"%s"}`, in.DriverID, in.UserID)
+			hash := sha256.Sum256([]byte(canonical))
+			existing := trip.Trip{ID: uuid.New(), Status: trip.StatusCompleted}
+			runInTx(tx)
+			var wantErr error
+			switch name {
+			case claimCase, completeErrorCase:
+				keys.EXPECT().Claim(gomock.Any(), key, hash[:]).Return(uuid.Nil, true, nil)
+				repo.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil)
+				repo.EXPECT().AddStatusChange(gomock.Any(), gomock.Any()).Return(nil)
+				if name == completeErrorCase {
+					wantErr = errDB
+				} else {
+					metrics.EXPECT().TripCreated(gomock.Any())
+				}
+				keys.EXPECT().Complete(gomock.Any(), key, gomock.Any()).Return(wantErr)
+			case replayCase, readErrorCase:
+				keys.EXPECT().Claim(gomock.Any(), key, hash[:]).Return(existing.ID, false, nil)
+				if name == readErrorCase {
+					wantErr = errDB
+				}
+				repo.EXPECT().GetByID(gomock.Any(), existing.ID).Return(existing, wantErr)
+			case "conflict", claimErrorCase:
+				wantErr = trip.ErrIdempotencyConflict
+				if name == claimErrorCase {
+					wantErr = errDB
+				}
+				keys.EXPECT().Claim(gomock.Any(), key, hash[:]).Return(uuid.Nil, false, wantErr)
+			}
+			got, err := create.New(repo, keys, tx, metrics, fixedAt).Execute(context.Background(), in)
+			if !errors.Is(err, wantErr) {
+				t.Fatalf("error = %v, want %v", err, wantErr)
+			}
+			if name == replayCase && (!got.Replayed || got.Trip != existing) {
+				t.Fatalf("replay = %+v, want %+v", got, existing)
+			}
+			if name == claimCase && (got.Replayed || got.ID == uuid.Nil) {
+				t.Fatalf("created = %+v", got)
+			}
+		})
 	}
 }

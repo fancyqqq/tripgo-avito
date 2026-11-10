@@ -35,9 +35,11 @@ func (m *Manager) Do(ctx context.Context, fn func(ctx context.Context) error) er
 		return fmt.Errorf("begin transaction: %w", err)
 	}
 
+	rollbackCtx := context.WithoutCancel(ctx)
 	defer func() {
-		if p := recover(); p != nil {
-			_ = tx.Rollback(ctx)
+		p := recover()
+		if p != nil {
+			_ = tx.Rollback(rollbackCtx)
 			panic(p)
 		}
 	}()
@@ -45,7 +47,7 @@ func (m *Manager) Do(ctx context.Context, fn func(ctx context.Context) error) er
 	txCtx := context.WithValue(ctx, txKey{}, tx)
 
 	if err := fn(txCtx); err != nil {
-		_ = tx.Rollback(ctx)
+		_ = tx.Rollback(rollbackCtx)
 		return err
 	}
 

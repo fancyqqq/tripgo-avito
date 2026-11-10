@@ -8,6 +8,8 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/google/uuid"
+
 	"github.com/fancyqqq/tripgo-avito/internal/domain/trip"
 	"github.com/fancyqqq/tripgo-avito/internal/generated"
 	"github.com/fancyqqq/tripgo-avito/internal/model"
@@ -32,12 +34,21 @@ func parseRequest(r *http.Request) (model.CreateTrip, error) {
 		return model.CreateTrip{}, err
 	}
 
+	var key *uuid.UUID
+	if value := r.Header.Get("Idempotency-Key"); value != "" {
+		parsed, err := uuid.Parse(value)
+		if err != nil {
+			return model.CreateTrip{}, fmt.Errorf("invalid Idempotency-Key: %w", err)
+		}
+		key = &parsed
+	}
 	return model.CreateTrip{
-		UserID:   req.UserId,
-		DriverID: req.DriverId,
-		Start:    trip.Point{Latitude: req.StartPoint.Latitude, Longitude: req.StartPoint.Longitude},
-		End:      trip.Point{Latitude: req.EndPoint.Latitude, Longitude: req.EndPoint.Longitude},
-		Price:    req.Price,
+		IdempotencyKey: key,
+		UserID:         req.UserId,
+		DriverID:       req.DriverId,
+		Start:          trip.Point{Latitude: req.StartPoint.Latitude, Longitude: req.StartPoint.Longitude},
+		End:            trip.Point{Latitude: req.EndPoint.Latitude, Longitude: req.EndPoint.Longitude},
+		Price:          req.Price,
 	}, nil
 }
 

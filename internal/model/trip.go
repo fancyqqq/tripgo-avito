@@ -7,9 +7,15 @@ import (
 )
 
 type CreateTrip struct {
-	UserID   uuid.UUID
-	DriverID uuid.UUID
-	Start    trip.Point
-	End      trip.Point
-	Price    int64
+	IdempotencyKey *uuid.UUID
+	UserID         uuid.UUID
+	DriverID       uuid.UUID
+	Start          trip.Point
+	End            trip.Point
+	Price          int64
+}
+
+type CreateTripResult struct {
+	trip.Trip
+	Replayed bool
 }

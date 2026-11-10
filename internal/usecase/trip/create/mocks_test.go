@@ -14,6 +14,7 @@ import (
 	reflect "reflect"
 
 	trip "github.com/fancyqqq/tripgo-avito/internal/domain/trip"
+	uuid "github.com/google/uuid"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -67,6 +68,75 @@ func (m *MocktripRepository) Create(ctx context.Context, t trip.Trip) error {
 func (mr *MocktripRepositoryMockRecorder) Create(ctx, t any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MocktripRepository)(nil).Create), ctx, t)
+}
+
+// GetByID mocks base method.
+func (m *MocktripRepository) GetByID(ctx context.Context, id uuid.UUID) (trip.Trip, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByID", ctx, id)
+	ret0, _ := ret[0].(trip.Trip)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByID indicates an expected call of GetByID.
+func (mr *MocktripRepositoryMockRecorder) GetByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MocktripRepository)(nil).GetByID), ctx, id)
+}
+
+// MockidempotencyRepository is a mock of idempotencyRepository interface.
+type MockidempotencyRepository struct {
+	ctrl     *gomock.Controller
+	recorder *MockidempotencyRepositoryMockRecorder
+	isgomock struct{}
+}
+
+// MockidempotencyRepositoryMockRecorder is the mock recorder for MockidempotencyRepository.
+type MockidempotencyRepositoryMockRecorder struct {
+	mock *MockidempotencyRepository
+}
+
+// NewMockidempotencyRepository creates a new mock instance.
+func NewMockidempotencyRepository(ctrl *gomock.Controller) *MockidempotencyRepository {
+	mock := &MockidempotencyRepository{ctrl: ctrl}
+	mock.recorder = &MockidempotencyRepositoryMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockidempotencyRepository) EXPECT() *MockidempotencyRepositoryMockRecorder {
+	return m.recorder
+}
+
+// Claim mocks base method.
+func (m *MockidempotencyRepository) Claim(ctx context.Context, key uuid.UUID, requestHash []byte) (uuid.UUID, bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Claim", ctx, key, requestHash)
+	ret0, _ := ret[0].(uuid.UUID)
+	ret1, _ := ret[1].(bool)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// Claim indicates an expected call of Claim.
+func (mr *MockidempotencyRepositoryMockRecorder) Claim(ctx, key, requestHash any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Claim", reflect.TypeOf((*MockidempotencyRepository)(nil).Claim), ctx, key, requestHash)
+}
+
+// Complete mocks base method.
+func (m *MockidempotencyRepository) Complete(ctx context.Context, key, tripID uuid.UUID) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Complete", ctx, key, tripID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Complete indicates an expected call of Complete.
+func (mr *MockidempotencyRepositoryMockRecorder) Complete(ctx, key, tripID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Complete", reflect.TypeOf((*MockidempotencyRepository)(nil).Complete), ctx, key, tripID)
 }
 
 // MocktxManager is a mock of txManager interface.

@@ -28,5 +28,10 @@ func scanTrip(row pgx.Row) (trip.Trip, error) {
 	}
 
 	t.Status = trip.Status(status)
+	t.StartedAt = t.StartedAt.UTC()
+	if t.FinishedAt != nil {
+		finishedAt := t.FinishedAt.UTC()
+		t.FinishedAt = &finishedAt
+	}
 	return t, nil
 }

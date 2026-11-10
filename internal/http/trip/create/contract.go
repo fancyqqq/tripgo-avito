@@ -4,10 +4,9 @@ package create
 import (
 	"context"
 
-	"github.com/fancyqqq/tripgo-avito/internal/domain/trip"
 	"github.com/fancyqqq/tripgo-avito/internal/model"
 )
 
 type useCase interface {
-	Execute(ctx context.Context, in model.CreateTrip) (trip.Trip, error)
+	Execute(ctx context.Context, in model.CreateTrip) (model.CreateTripResult, error)
 }

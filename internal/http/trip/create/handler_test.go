@@ -1,6 +1,7 @@
 package create_test
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"log/slog"
@@ -83,7 +84,7 @@ func TestHandleCreated(t *testing.T) {
 		Status:     trip.StatusActive,
 		StartedAt:  startedAt,
 	}
-	uc.EXPECT().Execute(gomock.Any(), wantInput).Return(created, nil)
+	uc.EXPECT().Execute(gomock.Any(), wantInput).Return(model.CreateTripResult{Trip: created}, nil)
 
 	rec := do(h, validBody)
 
@@ -231,7 +232,7 @@ func TestHandleUseCaseErrors(t *testing.T) {
 			t.Parallel()
 
 			h, uc := newHandler(t)
-			uc.EXPECT().Execute(gomock.Any(), gomock.Any()).Return(trip.Trip{}, tt.err)
+			uc.EXPECT().Execute(gomock.Any(), gomock.Any()).Return(model.CreateTripResult{}, tt.err)
 
 			rec := do(h, validBody)
 
@@ -243,6 +244,57 @@ func TestHandleUseCaseErrors(t *testing.T) {
 			}
 			if rec.Header().Get("Location") != "" {
 				t.Fatal("location must not be set on error")
+			}
+		})
+	}
+}
+
+func TestHandleIdempotency(t *testing.T) {
+	t.Parallel()
+	const newCase = "new"
+	const replayCase = "replay"
+	const invalidKeyCase = "invalid key"
+	const conflictCase = "conflict"
+	for _, name := range []string{newCase, replayCase, conflictCase, invalidKeyCase} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+			h, uc := newHandler(t)
+			key := uuid.New()
+			created := trip.Trip{ID: uuid.New(), Status: trip.StatusActive}
+			req := httptest.NewRequest(http.MethodPost, path, strings.NewReader(validBody))
+			req.Header.Set("Idempotency-Key", key.String())
+			wantStatus := http.StatusCreated
+			if name == invalidKeyCase {
+				req.Header.Set("Idempotency-Key", "bad-key")
+				wantStatus = http.StatusBadRequest
+			} else {
+				var resultErr error
+				if name == conflictCase {
+					resultErr = trip.ErrIdempotencyConflict
+					wantStatus = http.StatusConflict
+				}
+				if name == replayCase {
+					wantStatus = http.StatusOK
+				}
+				uc.EXPECT().Execute(gomock.Any(), gomock.Any()).DoAndReturn(func(_ context.Context, in model.CreateTrip) (model.CreateTripResult, error) {
+					if in.IdempotencyKey == nil || *in.IdempotencyKey != key {
+						t.Fatalf("key = %v, want %v", in.IdempotencyKey, key)
+					}
+					return model.CreateTripResult{Trip: created, Replayed: name == replayCase}, resultErr
+				})
+			}
+			rec := httptest.NewRecorder()
+			h.Handle(rec, req)
+			if rec.Code != wantStatus {
+				t.Fatalf("status = %d, want %d, body: %s", rec.Code, wantStatus, rec.Body)
+			}
+			if name == newCase || name == replayCase {
+				if rec.Header().Get("Location") != path+"/"+created.ID.String() {
+					t.Fatalf("location = %s", rec.Header().Get("Location"))
+				}
+			}
+			if name == conflictCase && decodeProblem(t, rec).Code != "idempotency_conflict" {
+				t.Fatal("incorrect conflict code")
 			}
 		})
 	}

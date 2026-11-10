@@ -38,6 +38,8 @@ func Problem(err error) (int, generated.Problem) {
 		return newProblem(http.StatusNotFound, "trip_not_found", "Trip not found", "Trip was not found")
 	case errors.Is(err, trip.ErrTripCompleted):
 		return newProblem(http.StatusConflict, "trip_completed", "Trip completed", "Operation is not allowed for a completed trip")
+	case errors.Is(err, trip.ErrIdempotencyConflict):
+		return newProblem(http.StatusConflict, "idempotency_conflict", "Idempotency conflict", "Idempotency-Key was already used with a different request body")
 	case errors.Is(err, trip.ErrDriverBusy):
 		return newProblem(http.StatusConflict, "driver_busy", "Driver busy", "Driver already has an active trip")
 	default:

@@ -20,6 +20,7 @@ import (
 	"github.com/fancyqqq/tripgo-avito/internal/infra/postgres"
 	"github.com/fancyqqq/tripgo-avito/internal/infra/postgres/transaction"
 	"github.com/fancyqqq/tripgo-avito/internal/infra/telemetry"
+	"github.com/fancyqqq/tripgo-avito/internal/repository/idempotency"
 	triprepository "github.com/fancyqqq/tripgo-avito/internal/repository/trip"
 	createusecase "github.com/fancyqqq/tripgo-avito/internal/usecase/trip/create"
 	finishusecase "github.com/fancyqqq/tripgo-avito/internal/usecase/trip/finish"
@@ -60,7 +61,7 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*Containe
 	txManager := transaction.New(pool)
 	tripRepo := triprepository.New(pool, cfg.Database.QueryTimeout)
 
-	createUseCase := createusecase.New(tripRepo, txManager, tripMetrics, now)
+	createUseCase := createusecase.New(tripRepo, idempotency.NewIdempotencyRepository(pool, cfg.Database.QueryTimeout), txManager, tripMetrics, now)
 	getUseCase := getusecase.New(tripRepo)
 	finishUseCase := finishusecase.New(tripRepo, txManager, tripMetrics, now)
 

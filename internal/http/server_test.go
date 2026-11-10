@@ -24,8 +24,8 @@ import (
 
 type createStub struct{}
 
-func (createStub) Execute(_ context.Context, in model.CreateTrip) (trip.Trip, error) {
-	return trip.Trip{ID: uuid.New(), UserID: in.UserID, DriverID: in.DriverID, Status: trip.StatusActive}, nil
+func (createStub) Execute(_ context.Context, in model.CreateTrip) (model.CreateTripResult, error) {
+	return model.CreateTripResult{Trip: trip.Trip{ID: uuid.New(), UserID: in.UserID, DriverID: in.DriverID, Status: trip.StatusActive}}, nil
 }
 
 type tripStub struct {

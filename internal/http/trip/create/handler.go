@@ -31,5 +31,9 @@ func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Location", "/api/v1/trips/"+t.ID.String())
-	response.JSON(w, http.StatusCreated, toResponse(t))
+	status := http.StatusCreated
+	if t.Replayed {
+		status = http.StatusOK
+	}
+	response.JSON(w, status, toResponse(t.Trip))
 }
