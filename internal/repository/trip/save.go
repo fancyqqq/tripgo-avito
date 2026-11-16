@@ -33,6 +33,7 @@ func (r *Repository) Create(ctx context.Context, t trip.Trip) error {
 			string(t.Status),
 			t.StartedAt,
 			t.FinishedAt,
+			t.LastPositionAt,
 		).
 		ToSql()
 	if err != nil {

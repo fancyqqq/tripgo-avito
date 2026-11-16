@@ -19,15 +19,16 @@ type Point struct {
 }
 
 type Trip struct {
-	ID         uuid.UUID
-	UserID     uuid.UUID
-	DriverID   uuid.UUID
-	StartPoint Point
-	EndPoint   Point
-	Price      int64
-	Status     Status
-	StartedAt  time.Time
-	FinishedAt *time.Time
+	ID             uuid.UUID
+	UserID         uuid.UUID
+	DriverID       uuid.UUID
+	StartPoint     Point
+	EndPoint       Point
+	Price          int64
+	Status         Status
+	StartedAt      time.Time
+	FinishedAt     *time.Time
+	LastPositionAt *time.Time
 }
 
 type StatusChange struct {

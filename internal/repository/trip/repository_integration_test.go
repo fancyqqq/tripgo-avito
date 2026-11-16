@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/fancyqqq/tripgo-avito/internal/domain/trip"
@@ -115,6 +116,13 @@ func assertTripEqual(t *testing.T, got, want trip.Trip) {
 	case !got.FinishedAt.Equal(*want.FinishedAt):
 		t.Fatalf("finished_at = %v, want %v", *got.FinishedAt, *want.FinishedAt)
 	}
+	switch {
+	case got.LastPositionAt == nil && want.LastPositionAt == nil:
+	case got.LastPositionAt == nil || want.LastPositionAt == nil:
+		t.Fatalf("last_position_at = %v, want %v", got.LastPositionAt, want.LastPositionAt)
+	case !got.LastPositionAt.Equal(*want.LastPositionAt):
+		t.Fatalf("last_position_at = %v, want %v", *got.LastPositionAt, *want.LastPositionAt)
+	}
 }
 
 func TestCreateAndGet(t *testing.T) {
@@ -140,6 +148,94 @@ func TestGetNotFound(t *testing.T) {
 	}
 	if _, err := repo.GetByIDForUpdate(context.Background(), uuid.New()); !errors.Is(err, trip.ErrTripNotFound) {
 		t.Fatalf("GetByIDForUpdate error = %v, want %v", err, trip.ErrTripNotFound)
+	}
+}
+
+func TestLastPositionSurvivesFinish(t *testing.T) {
+	pool := newPool(t)
+	repo := triprepository.New(pool, queryTimeout)
+	tr := newTrip(t, uuid.New())
+	lastPositionAt := tr.StartedAt.In(time.FixedZone("UTC+5", 5*60*60))
+	tr.LastPositionAt = &lastPositionAt
+	create(t, repo, pool, tr)
+
+	got, err := repo.GetByID(context.Background(), tr.ID)
+	if err != nil {
+		t.Fatalf("get trip with last position: %v", err)
+	}
+	assertTripEqual(t, got, tr)
+	if got.LastPositionAt.Location() != time.UTC {
+		t.Fatalf("last_position_at location = %v, want UTC", got.LastPositionAt.Location())
+	}
+
+	uc := finishusecase.New(repo, transaction.New(pool), &completedCounter{}, now)
+	finished, err := uc.Execute(context.Background(), tr.ID)
+	if err != nil {
+		t.Fatalf("finish trip with last position: %v", err)
+	}
+	if finished.LastPositionAt == nil || !finished.LastPositionAt.Equal(lastPositionAt) {
+		t.Fatalf("finished last_position_at = %v, want %v", finished.LastPositionAt, lastPositionAt)
+	}
+
+	got, err = repo.GetByID(context.Background(), tr.ID)
+	if err != nil {
+		t.Fatalf("get finished trip: %v", err)
+	}
+	assertTripEqual(t, got, finished)
+}
+
+func TestPositionSchemaConstraints(t *testing.T) {
+	const checkViolationCode = "23514"
+
+	pool := newPool(t)
+	repo := triprepository.New(pool, queryTimeout)
+	tr := newTrip(t, uuid.New())
+	create(t, repo, pool, tr)
+
+	tests := []struct {
+		name      string
+		tripID    uuid.UUID
+		latitude  float64
+		longitude float64
+		wantCode  string
+	}{
+		{name: "upper boundaries", tripID: tr.ID, latitude: 90, longitude: 180},
+		{name: "lower boundaries", tripID: tr.ID, latitude: -90, longitude: -180},
+		{name: "latitude above maximum", tripID: tr.ID, latitude: 90.1, wantCode: checkViolationCode},
+		{name: "latitude below minimum", tripID: tr.ID, latitude: -90.1, wantCode: checkViolationCode},
+		{name: "longitude above maximum", tripID: tr.ID, longitude: 180.1, wantCode: checkViolationCode},
+		{name: "longitude below minimum", tripID: tr.ID, longitude: -180.1, wantCode: checkViolationCode},
+		{name: "trip does not exist", tripID: uuid.New(), wantCode: "23503"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := pool.Exec(context.Background(),
+				"INSERT INTO trip_positions (trip_id, latitude, longitude, recorded_at) VALUES ($1, $2, $3, $4)",
+				tt.tripID, tt.latitude, tt.longitude, tr.StartedAt,
+			)
+			if tt.wantCode == "" {
+				if err != nil {
+					t.Fatalf("insert valid position: %v", err)
+				}
+				return
+			}
+			var pgErr *pgconn.PgError
+			if !errors.As(err, &pgErr) || pgErr.Code != tt.wantCode {
+				t.Fatalf("insert error = %v, want SQLSTATE %s", err, tt.wantCode)
+			}
+		})
+	}
+
+	if _, err := pool.Exec(context.Background(), "DELETE FROM trips WHERE id = $1", tr.ID); err != nil {
+		t.Fatalf("delete trip: %v", err)
+	}
+	var remaining int
+	if err := pool.QueryRow(context.Background(), "SELECT count(*) FROM trip_positions WHERE trip_id = $1", tr.ID).Scan(&remaining); err != nil {
+		t.Fatalf("count positions after deleting trip: %v", err)
+	}
+	if remaining != 0 {
+		t.Fatalf("positions after deleting trip = %d, want 0", remaining)
 	}
 }
 

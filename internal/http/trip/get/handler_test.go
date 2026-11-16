@@ -25,16 +25,18 @@ func TestHandleFound(t *testing.T) {
 
 	startedAt := time.Date(2026, 10, 27, 12, 0, 0, 0, time.UTC)
 	finishedAt := startedAt.Add(30 * time.Minute)
+	lastPositionAt := finishedAt.Add(-time.Second)
 	stored := trip.Trip{
-		ID:         uuid.New(),
-		UserID:     uuid.New(),
-		DriverID:   uuid.New(),
-		StartPoint: trip.Point{Latitude: 55.75, Longitude: 37.61},
-		EndPoint:   trip.Point{Latitude: 55.80, Longitude: 37.70},
-		Price:      500,
-		Status:     trip.StatusCompleted,
-		StartedAt:  startedAt,
-		FinishedAt: &finishedAt,
+		ID:             uuid.New(),
+		UserID:         uuid.New(),
+		DriverID:       uuid.New(),
+		StartPoint:     trip.Point{Latitude: 55.75, Longitude: 37.61},
+		EndPoint:       trip.Point{Latitude: 55.80, Longitude: 37.70},
+		Price:          500,
+		Status:         trip.StatusCompleted,
+		StartedAt:      startedAt,
+		FinishedAt:     &finishedAt,
+		LastPositionAt: &lastPositionAt,
 	}
 	uc.EXPECT().Execute(gomock.Any(), stored.ID).Return(stored, nil)
 
@@ -70,6 +72,9 @@ func TestHandleFound(t *testing.T) {
 	}
 	if body.FinishedAt == nil || !body.FinishedAt.Equal(finishedAt) {
 		t.Fatalf("finished_at = %v, want %v", body.FinishedAt, finishedAt)
+	}
+	if body.LastPositionAt == nil || !body.LastPositionAt.Equal(lastPositionAt) {
+		t.Fatalf("last_position_at = %v, want %v", body.LastPositionAt, lastPositionAt)
 	}
 }
 

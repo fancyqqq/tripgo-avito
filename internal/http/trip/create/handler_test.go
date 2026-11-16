@@ -261,6 +261,10 @@ func TestHandleIdempotency(t *testing.T) {
 			h, uc := newHandler(t)
 			key := uuid.New()
 			created := trip.Trip{ID: uuid.New(), Status: trip.StatusActive}
+			lastPositionAt := time.Date(2026, 11, 17, 10, 0, 0, 0, time.UTC)
+			if name == replayCase {
+				created.LastPositionAt = &lastPositionAt
+			}
 			req := httptest.NewRequest(http.MethodPost, path, strings.NewReader(validBody))
 			req.Header.Set("Idempotency-Key", key.String())
 			wantStatus := http.StatusCreated
@@ -291,6 +295,15 @@ func TestHandleIdempotency(t *testing.T) {
 			if name == newCase || name == replayCase {
 				if rec.Header().Get("Location") != path+"/"+created.ID.String() {
 					t.Fatalf("location = %s", rec.Header().Get("Location"))
+				}
+				if name == replayCase {
+					var body generated.Trip
+					if err := json.NewDecoder(rec.Body).Decode(&body); err != nil {
+						t.Fatalf("decode replay body: %v", err)
+					}
+					if body.LastPositionAt == nil || !body.LastPositionAt.Equal(lastPositionAt) {
+						t.Fatalf("last_position_at = %v, want %v", body.LastPositionAt, lastPositionAt)
+					}
 				}
 			}
 			if name == conflictCase && decodeProblem(t, rec).Code != "idempotency_conflict" {
