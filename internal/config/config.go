@@ -12,8 +12,10 @@ type Config struct {
 	LogLevel        string        `env:"LOG_LEVEL,required,notEmpty"`
 	ShutdownTimeout time.Duration `env:"SHUTDOWN_TIMEOUT,required,notEmpty"`
 
-	HTTP     HTTPConfig
-	Database DatabaseConfig
+	HTTP      HTTPConfig
+	Database  DatabaseConfig
+	Positions PositionsConfig
+	Push      PushConfig
 }
 
 type HTTPConfig struct {
@@ -73,6 +75,14 @@ func (c Config) Validate() error {
 		if duration <= 0 {
 			return fmt.Errorf("%s must be greater than zero", name)
 		}
+	}
+
+	if err := c.Positions.validate(); err != nil {
+		return err
+	}
+
+	if err := c.Push.validate(); err != nil {
+		return err
 	}
 
 	return nil
