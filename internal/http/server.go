@@ -11,16 +11,18 @@ import (
 	"github.com/fancyqqq/tripgo-avito/internal/http/health"
 	"github.com/fancyqqq/tripgo-avito/internal/http/response"
 	"github.com/fancyqqq/tripgo-avito/internal/http/trip/create"
+	"github.com/fancyqqq/tripgo-avito/internal/http/trip/createposition"
 	"github.com/fancyqqq/tripgo-avito/internal/http/trip/finish"
 	"github.com/fancyqqq/tripgo-avito/internal/http/trip/get"
 )
 
 type Server struct {
-	create *create.Handler
-	get    *get.Handler
-	finish *finish.Handler
-	health *health.Handler
-	logger *slog.Logger
+	create         *create.Handler
+	createPosition *createposition.Handler
+	get            *get.Handler
+	finish         *finish.Handler
+	health         *health.Handler
+	logger         *slog.Logger
 }
 
 var _ generated.ServerInterface = (*Server)(nil)
@@ -29,15 +31,17 @@ func NewServer(
 	createHandler *create.Handler,
 	getHandler *get.Handler,
 	finishHandler *finish.Handler,
+	createPositionHandler *createposition.Handler,
 	healthHandler *health.Handler,
 	logger *slog.Logger,
 ) *Server {
 	return &Server{
-		create: createHandler,
-		get:    getHandler,
-		finish: finishHandler,
-		health: healthHandler,
-		logger: logger,
+		create:         createHandler,
+		get:            getHandler,
+		finish:         finishHandler,
+		createPosition: createPositionHandler,
+		health:         healthHandler,
+		logger:         logger,
 	}
 }
 
@@ -60,6 +64,10 @@ func (s *Server) GetTrip(w http.ResponseWriter, r *http.Request, tripID generate
 
 func (s *Server) FinishTrip(w http.ResponseWriter, r *http.Request, tripID generated.TripId) {
 	s.finish.Handle(w, r, tripID)
+}
+
+func (s *Server) CreateTripPosition(w http.ResponseWriter, r *http.Request, tripID generated.TripId) {
+	s.createPosition.Handle(w, r, tripID)
 }
 
 func (s *Server) Health(w http.ResponseWriter, r *http.Request) {

@@ -15,14 +15,17 @@ import (
 	"github.com/fancyqqq/tripgo-avito/internal/http/health"
 	"github.com/fancyqqq/tripgo-avito/internal/http/middleware"
 	createhandler "github.com/fancyqqq/tripgo-avito/internal/http/trip/create"
+	createpositionhandler "github.com/fancyqqq/tripgo-avito/internal/http/trip/createposition"
 	finishhandler "github.com/fancyqqq/tripgo-avito/internal/http/trip/finish"
 	gethandler "github.com/fancyqqq/tripgo-avito/internal/http/trip/get"
 	"github.com/fancyqqq/tripgo-avito/internal/infra/postgres"
 	"github.com/fancyqqq/tripgo-avito/internal/infra/postgres/transaction"
 	"github.com/fancyqqq/tripgo-avito/internal/infra/telemetry"
 	"github.com/fancyqqq/tripgo-avito/internal/repository/idempotency"
+	positionrepository "github.com/fancyqqq/tripgo-avito/internal/repository/position"
 	triprepository "github.com/fancyqqq/tripgo-avito/internal/repository/trip"
 	createusecase "github.com/fancyqqq/tripgo-avito/internal/usecase/trip/create"
+	createpositionusecase "github.com/fancyqqq/tripgo-avito/internal/usecase/trip/createposition"
 	finishusecase "github.com/fancyqqq/tripgo-avito/internal/usecase/trip/finish"
 	getusecase "github.com/fancyqqq/tripgo-avito/internal/usecase/trip/get"
 )
@@ -64,11 +67,15 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*Containe
 	createUseCase := createusecase.New(tripRepo, idempotency.NewIdempotencyRepository(pool, cfg.Database.QueryTimeout), txManager, tripMetrics, now)
 	getUseCase := getusecase.New(tripRepo)
 	finishUseCase := finishusecase.New(tripRepo, txManager, tripMetrics, now)
+	createPositionUseCase := createpositionusecase.New(
+		tripRepo, positionrepository.New(pool, cfg.Database.QueryTimeout), txManager, tripMetrics, nil, now,
+	)
 
 	server := httptransport.NewServer(
 		createhandler.New(createUseCase, logger),
 		gethandler.New(getUseCase, logger),
 		finishhandler.New(finishUseCase, logger),
+		createpositionhandler.New(createPositionUseCase, logger),
 		health.New(pool, cfg.Database.QueryTimeout, logger),
 		logger,
 	)

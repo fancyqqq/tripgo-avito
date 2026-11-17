@@ -31,7 +31,7 @@ generate:
 		-generate types,chi-server \
 		-package generated \
 		-o internal/generated/api.gen.go \
-		-include-operation-ids createTrip,getTrip,finishTrip,health,ready \
+		-include-operation-ids createTrip,getTrip,finishTrip,createTripPosition,health,ready \
 		$(OPENAPI_SPEC)
 	go generate ./...
 
