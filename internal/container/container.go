@@ -11,6 +11,7 @@ import (
 	"go.opentelemetry.io/otel"
 
 	"github.com/fancyqqq/tripgo-avito/internal/config"
+	"github.com/fancyqqq/tripgo-avito/internal/gateway/push"
 	httptransport "github.com/fancyqqq/tripgo-avito/internal/http"
 	"github.com/fancyqqq/tripgo-avito/internal/http/health"
 	"github.com/fancyqqq/tripgo-avito/internal/http/middleware"
@@ -37,6 +38,7 @@ const meterName = "github.com/fancyqqq/tripgo-avito"
 type Container struct {
 	HTTPServer *http.Server
 	pool       *pgxpool.Pool
+	push       *push.Gateway
 }
 
 func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*Container, error) {
@@ -61,6 +63,11 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*Containe
 	if err != nil {
 		pool.Close()
 		return nil, fmt.Errorf("init http metrics: %w", err)
+	}
+	pushClient, err := push.New(cfg.Push.HTTPURL, cfg.Push.RequestTimeout)
+	if err != nil {
+		pool.Close()
+		return nil, fmt.Errorf("init push gateway: %w", err)
 	}
 
 	txManager := transaction.New(pool)
@@ -103,9 +110,11 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*Containe
 			IdleTimeout:       cfg.HTTP.IdleTimeout,
 		},
 		pool: pool,
+		push: pushClient,
 	}, nil
 }
 
 func (c *Container) Close() {
+	c.push.Close()
 	c.pool.Close()
 }
