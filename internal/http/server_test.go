@@ -21,6 +21,7 @@ import (
 	"github.com/fancyqqq/tripgo-avito/internal/http/trip/createposition"
 	"github.com/fancyqqq/tripgo-avito/internal/http/trip/finish"
 	"github.com/fancyqqq/tripgo-avito/internal/http/trip/get"
+	"github.com/fancyqqq/tripgo-avito/internal/http/trip/listpositions"
 	"github.com/fancyqqq/tripgo-avito/internal/model"
 )
 
@@ -35,6 +36,12 @@ type tripStub struct {
 }
 
 type positionStub struct{}
+
+type listPositionsStub struct{}
+
+func (listPositionsStub) Execute(context.Context, uuid.UUID) ([]trip.Position, error) {
+	return []trip.Position{}, nil
+}
 
 func (positionStub) Execute(_ context.Context, in model.CreatePosition) (trip.Position, error) {
 	return trip.Position{ID: 1, TripID: in.TripID, Coordinates: in.Coordinates, RecordedAt: in.RecordedAt}, nil
@@ -59,6 +66,7 @@ func newRouter(pingErr error) http.Handler {
 		get.New(tripStub{status: trip.StatusActive}, logger),
 		finish.New(tripStub{status: trip.StatusCompleted}, logger),
 		createposition.New(positionStub{}, logger),
+		listpositions.New(listPositionsStub{}, logger),
 		health.New(pingerStub{err: pingErr}, time.Second, logger),
 		logger,
 	)
@@ -77,6 +85,7 @@ func TestRoutes(t *testing.T) {
 		wantStatus int
 	}{
 		{name: "get trip", method: http.MethodGet, path: "/api/v1/trips/" + id, wantStatus: http.StatusOK},
+		{name: "list positions", method: http.MethodGet, path: "/api/v1/trips/" + id + "/positions", wantStatus: http.StatusOK},
 		{name: "finish trip", method: http.MethodPost, path: "/api/v1/trips/" + id + "/finish", wantStatus: http.StatusOK},
 		{name: "health", method: http.MethodGet, path: "/health", wantStatus: http.StatusOK},
 		{name: "ready", method: http.MethodGet, path: "/ready", wantStatus: http.StatusOK},
@@ -106,6 +115,7 @@ func TestInvalidTripIDReturnsBadRequest(t *testing.T) {
 		{method: http.MethodGet, path: "/api/v1/trips/not-a-uuid"},
 		{method: http.MethodPost, path: "/api/v1/trips/not-a-uuid/finish"},
 		{method: http.MethodPost, path: "/api/v1/trips/not-a-uuid/positions"},
+		{method: http.MethodGet, path: "/api/v1/trips/not-a-uuid/positions"},
 	} {
 		t.Run(tc.method+" "+tc.path, func(t *testing.T) {
 			t.Parallel()

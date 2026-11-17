@@ -14,11 +14,13 @@ import (
 	"github.com/fancyqqq/tripgo-avito/internal/http/trip/createposition"
 	"github.com/fancyqqq/tripgo-avito/internal/http/trip/finish"
 	"github.com/fancyqqq/tripgo-avito/internal/http/trip/get"
+	"github.com/fancyqqq/tripgo-avito/internal/http/trip/listpositions"
 )
 
 type Server struct {
 	create         *create.Handler
 	createPosition *createposition.Handler
+	listPositions  *listpositions.Handler
 	get            *get.Handler
 	finish         *finish.Handler
 	health         *health.Handler
@@ -32,6 +34,7 @@ func NewServer(
 	getHandler *get.Handler,
 	finishHandler *finish.Handler,
 	createPositionHandler *createposition.Handler,
+	listPositionsHandler *listpositions.Handler,
 	healthHandler *health.Handler,
 	logger *slog.Logger,
 ) *Server {
@@ -40,6 +43,7 @@ func NewServer(
 		get:            getHandler,
 		finish:         finishHandler,
 		createPosition: createPositionHandler,
+		listPositions:  listPositionsHandler,
 		health:         healthHandler,
 		logger:         logger,
 	}
@@ -68,6 +72,10 @@ func (s *Server) FinishTrip(w http.ResponseWriter, r *http.Request, tripID gener
 
 func (s *Server) CreateTripPosition(w http.ResponseWriter, r *http.Request, tripID generated.TripId) {
 	s.createPosition.Handle(w, r, tripID)
+}
+
+func (s *Server) ListTripPositions(w http.ResponseWriter, r *http.Request, tripID generated.TripId) {
+	s.listPositions.Handle(w, r, tripID)
 }
 
 func (s *Server) Health(w http.ResponseWriter, r *http.Request) {

@@ -18,6 +18,7 @@ import (
 	createpositionhandler "github.com/fancyqqq/tripgo-avito/internal/http/trip/createposition"
 	finishhandler "github.com/fancyqqq/tripgo-avito/internal/http/trip/finish"
 	gethandler "github.com/fancyqqq/tripgo-avito/internal/http/trip/get"
+	listpositionshandler "github.com/fancyqqq/tripgo-avito/internal/http/trip/listpositions"
 	"github.com/fancyqqq/tripgo-avito/internal/infra/postgres"
 	"github.com/fancyqqq/tripgo-avito/internal/infra/postgres/transaction"
 	"github.com/fancyqqq/tripgo-avito/internal/infra/telemetry"
@@ -28,6 +29,7 @@ import (
 	createpositionusecase "github.com/fancyqqq/tripgo-avito/internal/usecase/trip/createposition"
 	finishusecase "github.com/fancyqqq/tripgo-avito/internal/usecase/trip/finish"
 	getusecase "github.com/fancyqqq/tripgo-avito/internal/usecase/trip/get"
+	listpositionsusecase "github.com/fancyqqq/tripgo-avito/internal/usecase/trip/listpositions"
 )
 
 const meterName = "github.com/fancyqqq/tripgo-avito"
@@ -63,19 +65,22 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*Containe
 
 	txManager := transaction.New(pool)
 	tripRepo := triprepository.New(pool, cfg.Database.QueryTimeout)
+	positionRepo := positionrepository.New(pool, cfg.Database.QueryTimeout)
 
 	createUseCase := createusecase.New(tripRepo, idempotency.NewIdempotencyRepository(pool, cfg.Database.QueryTimeout), txManager, tripMetrics, now)
 	getUseCase := getusecase.New(tripRepo)
 	finishUseCase := finishusecase.New(tripRepo, txManager, tripMetrics, now)
 	createPositionUseCase := createpositionusecase.New(
-		tripRepo, positionrepository.New(pool, cfg.Database.QueryTimeout), txManager, tripMetrics, nil, now,
+		tripRepo, positionRepo, txManager, tripMetrics, nil, now,
 	)
+	listPositionsUseCase := listpositionsusecase.New(tripRepo, positionRepo)
 
 	server := httptransport.NewServer(
 		createhandler.New(createUseCase, logger),
 		gethandler.New(getUseCase, logger),
 		finishhandler.New(finishUseCase, logger),
 		createpositionhandler.New(createPositionUseCase, logger),
+		listpositionshandler.New(listPositionsUseCase, logger),
 		health.New(pool, cfg.Database.QueryTimeout, logger),
 		logger,
 	)
