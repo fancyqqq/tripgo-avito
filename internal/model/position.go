@@ -13,3 +13,9 @@ type CreatePosition struct {
 	Coordinates trip.Point
 	RecordedAt  time.Time
 }
+
+type StaleTrip struct {
+	TripID         uuid.UUID
+	DriverID       uuid.UUID
+	LastActivityAt time.Time
+}
