@@ -9,7 +9,7 @@ GREMLINS_VERSION := v0.6.0
 GREMLINS := $(CURDIR)/bin/gremlins/$(GREMLINS_VERSION)/gremlins
 MUTATION_REPORT_DIR ?= reports/mutation/latest
 
-.PHONY: build run migrate migrate-down migrate-status generate docker-build docker-run lint fmt test test-integration cover test-mutation
+.PHONY: build run migrate migrate-down migrate-status generate docker-build docker-run lint fmt test test-integration test-position-pool-load cover test-mutation
 
 run:
 	go run ./cmd/trip-service
@@ -61,6 +61,9 @@ test:
 
 test-integration:
 	go test -race -count=1 -tags integration ./...
+
+test-position-pool-load: build
+	python3 scripts/position-pool-load.py
 
 $(GREMLINS):
 	GOBIN="$(@D)" go install github.com/go-gremlins/gremlins/cmd/gremlins@$(GREMLINS_VERSION)

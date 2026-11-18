@@ -90,6 +90,15 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*Containe
 		pool.Close()
 		return nil, fmt.Errorf("init position workers: %w", err)
 	}
+	if err := telemetry.RegisterPositionPoolMetrics(meter, func() (int, int) {
+		state := positionWorkers.Snapshot()
+		return state.QueueSize, state.ActiveWorkers
+	}); err != nil {
+		positionWorkers.Close()
+		pushClient.Close()
+		pool.Close()
+		return nil, fmt.Errorf("init position pool metrics: %w", err)
+	}
 
 	txManager := transaction.New(pool)
 	tripRepo := triprepository.New(pool, cfg.Database.QueryTimeout)

@@ -1,0 +1,2950 @@
+{
+  "run_id": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+  "started_at_unix": 1795012404.4386907,
+  "finished_at_unix": 1795012453.941706,
+  "parameters": {
+    "trips": 200,
+    "workers": 4,
+    "queue_size": 10,
+    "check_interval_seconds": 1,
+    "push_timeout_seconds": 1,
+    "slow_push_latency_ms": 5000,
+    "metric_export_interval_seconds": 15
+  },
+  "loaded": {
+    "tripgo_position_requests_queue_size:": 6.0,
+    "tripgo_position_requests_workers_active:": 4.0,
+    "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+    "tripgo_position_requests_duration_seconds_count:error": 36.0,
+    "tripgo_position_requests_total:dropped": 1855.0,
+    "tripgo_position_requests_total:error": 36.0,
+    "tripgo_stale_checks_total:dropped": 1855.0,
+    "tripgo_stale_checks_total:duplicate": 99.0,
+    "tripgo_stale_checks_total:queued": 46.0
+  },
+  "drained": {
+    "tripgo_position_requests_queue_size:": 0.0,
+    "tripgo_position_requests_workers_active:": 0.0,
+    "tripgo_position_requests_duration_seconds_sum:error": 60.03690274799998,
+    "tripgo_position_requests_duration_seconds_count:error": 60.0,
+    "tripgo_position_requests_total:dropped": 2785.0,
+    "tripgo_position_requests_total:error": 60.0,
+    "tripgo_stale_checks_total:dropped": 2785.0,
+    "tripgo_stale_checks_total:duplicate": 149.0,
+    "tripgo_stale_checks_total:queued": 66.0,
+    "tripgo_position_requests_duration_seconds_sum:success": 0.008710203,
+    "tripgo_position_requests_duration_seconds_count:success": 6.0,
+    "tripgo_position_requests_total:success": 6.0,
+    "tripgo_positions_saved_total:": 1.0
+  },
+  "samples": [
+    {
+      "elapsed_seconds": 0.2446300983428955,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 1.248157024383545,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 2.251394271850586,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 3.2548468112945557,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 4.25874137878418,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 5.262138366699219,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 6.265947103500366,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 7.269744396209717,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 8.273194789886475,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 9.27721357345581,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 10.280536413192749,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 11.284173250198364,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 12.287408113479614,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 13.290968894958496,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 14.294601202011108,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 15.298038005828857,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 16.30130410194397,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 17.30461597442627,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 18.308505296707153,
+      "phase": "idle",
+      "values": {}
+    },
+    {
+      "elapsed_seconds": 19.311809539794922,
+      "phase": "idle",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 19.349453449249268,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 20.352699995040894,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 21.356287717819214,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 22.359756231307983,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 23.363266229629517,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 24.366658449172974,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 25.369932889938354,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 26.37174105644226,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 27.37531089782715,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 28.378567218780518,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 29.381627082824707,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 30.385369777679443,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 31.388532876968384,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 32.39181184768677,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 33.39533042907715,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0
+      }
+    },
+    {
+      "elapsed_seconds": 34.39893960952759,
+      "phase": "slow_push",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 34.441309452056885,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 35.44470572471619,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 36.44813585281372,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 37.45179104804993,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 38.45545840263367,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 39.45891094207764,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 40.46240568161011,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 41.46614933013916,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 42.46960759162903,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 43.47346520423889,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 44.476898431777954,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 45.48049068450928,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 46.484015226364136,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 47.48731827735901,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 48.49186968803406,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 6.0,
+        "tripgo_position_requests_workers_active:": 4.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 36.019994231999995,
+        "tripgo_position_requests_duration_seconds_count:error": 36.0,
+        "tripgo_position_requests_total:dropped": 1855.0,
+        "tripgo_position_requests_total:error": 36.0,
+        "tripgo_stale_checks_total:dropped": 1855.0,
+        "tripgo_stale_checks_total:duplicate": 99.0,
+        "tripgo_stale_checks_total:queued": 46.0
+      }
+    },
+    {
+      "elapsed_seconds": 49.4955997467041,
+      "phase": "drained",
+      "values": {
+        "tripgo_position_requests_queue_size:": 0.0,
+        "tripgo_position_requests_workers_active:": 0.0,
+        "tripgo_position_requests_duration_seconds_sum:error": 60.03690274799998,
+        "tripgo_position_requests_duration_seconds_count:error": 60.0,
+        "tripgo_position_requests_total:dropped": 2785.0,
+        "tripgo_position_requests_total:error": 60.0,
+        "tripgo_stale_checks_total:dropped": 2785.0,
+        "tripgo_stale_checks_total:duplicate": 149.0,
+        "tripgo_stale_checks_total:queued": 66.0,
+        "tripgo_position_requests_duration_seconds_sum:success": 0.008710203,
+        "tripgo_position_requests_duration_seconds_count:success": 6.0,
+        "tripgo_position_requests_total:success": 6.0,
+        "tripgo_positions_saved_total:": 1.0
+      }
+    }
+  ],
+  "ready_max_seconds": 0.0024871950008673593,
+  "ready_checks": 52,
+  "rss_min_kib": 22176,
+  "rss_max_kib": 27988,
+  "exit_code": 0,
+  "prometheus_queries": {
+    "queue": "tripgo_position_requests_queue_size{exported_instance=\"positions-load-19c054ad08f44fb480a8e29e8e551638\"}",
+    "workers": "tripgo_position_requests_workers_active{exported_instance=\"positions-load-19c054ad08f44fb480a8e29e8e551638\"}",
+    "all": "{__name__=~\"tripgo_(position_requests.*|stale_checks.*|positions_saved.*)\",exported_instance=\"positions-load-19c054ad08f44fb480a8e29e8e551638\"}"
+  },
+  "prometheus_range": [
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "+Inf",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "+Inf",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "0.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "0"
+        ],
+        [
+          1795012439.439,
+          "0"
+        ],
+        [
+          1795012440.439,
+          "0"
+        ],
+        [
+          1795012441.439,
+          "0"
+        ],
+        [
+          1795012442.439,
+          "0"
+        ],
+        [
+          1795012443.439,
+          "0"
+        ],
+        [
+          1795012444.439,
+          "0"
+        ],
+        [
+          1795012445.439,
+          "0"
+        ],
+        [
+          1795012446.439,
+          "0"
+        ],
+        [
+          1795012447.439,
+          "0"
+        ],
+        [
+          1795012448.439,
+          "0"
+        ],
+        [
+          1795012449.439,
+          "0"
+        ],
+        [
+          1795012450.439,
+          "0"
+        ],
+        [
+          1795012451.439,
+          "0"
+        ],
+        [
+          1795012452.439,
+          "0"
+        ],
+        [
+          1795012453.439,
+          "0"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "0.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "0"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "10.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "10.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "100.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "100.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "1000.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "1000.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "10000.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "10000.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "25.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "25.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "250.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "250.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "2500.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "2500.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "5.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "5.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "50.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "50.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "500.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "500.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "5000.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "5000.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "75.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "75.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "750.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "750.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "7500.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_bucket",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "le": "7500.0",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_count",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_count",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_sum",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36.019994231999995"
+        ],
+        [
+          1795012439.439,
+          "36.019994231999995"
+        ],
+        [
+          1795012440.439,
+          "36.019994231999995"
+        ],
+        [
+          1795012441.439,
+          "36.019994231999995"
+        ],
+        [
+          1795012442.439,
+          "36.019994231999995"
+        ],
+        [
+          1795012443.439,
+          "36.019994231999995"
+        ],
+        [
+          1795012444.439,
+          "36.019994231999995"
+        ],
+        [
+          1795012445.439,
+          "36.019994231999995"
+        ],
+        [
+          1795012446.439,
+          "36.019994231999995"
+        ],
+        [
+          1795012447.439,
+          "36.019994231999995"
+        ],
+        [
+          1795012448.439,
+          "36.019994231999995"
+        ],
+        [
+          1795012449.439,
+          "36.019994231999995"
+        ],
+        [
+          1795012450.439,
+          "36.019994231999995"
+        ],
+        [
+          1795012451.439,
+          "36.019994231999995"
+        ],
+        [
+          1795012452.439,
+          "36.019994231999995"
+        ],
+        [
+          1795012453.439,
+          "60.03690274799998"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_duration_seconds_sum",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "0.008710203"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_queue_size",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito"
+      },
+      "values": [
+        [
+          1795012423.439,
+          "0"
+        ],
+        [
+          1795012424.439,
+          "0"
+        ],
+        [
+          1795012425.439,
+          "0"
+        ],
+        [
+          1795012426.439,
+          "0"
+        ],
+        [
+          1795012427.439,
+          "0"
+        ],
+        [
+          1795012428.439,
+          "0"
+        ],
+        [
+          1795012429.439,
+          "0"
+        ],
+        [
+          1795012430.439,
+          "0"
+        ],
+        [
+          1795012431.439,
+          "0"
+        ],
+        [
+          1795012432.439,
+          "0"
+        ],
+        [
+          1795012433.439,
+          "0"
+        ],
+        [
+          1795012434.439,
+          "0"
+        ],
+        [
+          1795012435.439,
+          "0"
+        ],
+        [
+          1795012436.439,
+          "0"
+        ],
+        [
+          1795012437.439,
+          "0"
+        ],
+        [
+          1795012438.439,
+          "6"
+        ],
+        [
+          1795012439.439,
+          "6"
+        ],
+        [
+          1795012440.439,
+          "6"
+        ],
+        [
+          1795012441.439,
+          "6"
+        ],
+        [
+          1795012442.439,
+          "6"
+        ],
+        [
+          1795012443.439,
+          "6"
+        ],
+        [
+          1795012444.439,
+          "6"
+        ],
+        [
+          1795012445.439,
+          "6"
+        ],
+        [
+          1795012446.439,
+          "6"
+        ],
+        [
+          1795012447.439,
+          "6"
+        ],
+        [
+          1795012448.439,
+          "6"
+        ],
+        [
+          1795012449.439,
+          "6"
+        ],
+        [
+          1795012450.439,
+          "6"
+        ],
+        [
+          1795012451.439,
+          "6"
+        ],
+        [
+          1795012452.439,
+          "6"
+        ],
+        [
+          1795012453.439,
+          "0"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_total",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "dropped"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "1855"
+        ],
+        [
+          1795012439.439,
+          "1855"
+        ],
+        [
+          1795012440.439,
+          "1855"
+        ],
+        [
+          1795012441.439,
+          "1855"
+        ],
+        [
+          1795012442.439,
+          "1855"
+        ],
+        [
+          1795012443.439,
+          "1855"
+        ],
+        [
+          1795012444.439,
+          "1855"
+        ],
+        [
+          1795012445.439,
+          "1855"
+        ],
+        [
+          1795012446.439,
+          "1855"
+        ],
+        [
+          1795012447.439,
+          "1855"
+        ],
+        [
+          1795012448.439,
+          "1855"
+        ],
+        [
+          1795012449.439,
+          "1855"
+        ],
+        [
+          1795012450.439,
+          "1855"
+        ],
+        [
+          1795012451.439,
+          "1855"
+        ],
+        [
+          1795012452.439,
+          "1855"
+        ],
+        [
+          1795012453.439,
+          "2785"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_total",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "error"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "36"
+        ],
+        [
+          1795012439.439,
+          "36"
+        ],
+        [
+          1795012440.439,
+          "36"
+        ],
+        [
+          1795012441.439,
+          "36"
+        ],
+        [
+          1795012442.439,
+          "36"
+        ],
+        [
+          1795012443.439,
+          "36"
+        ],
+        [
+          1795012444.439,
+          "36"
+        ],
+        [
+          1795012445.439,
+          "36"
+        ],
+        [
+          1795012446.439,
+          "36"
+        ],
+        [
+          1795012447.439,
+          "36"
+        ],
+        [
+          1795012448.439,
+          "36"
+        ],
+        [
+          1795012449.439,
+          "36"
+        ],
+        [
+          1795012450.439,
+          "36"
+        ],
+        [
+          1795012451.439,
+          "36"
+        ],
+        [
+          1795012452.439,
+          "36"
+        ],
+        [
+          1795012453.439,
+          "60"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_total",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "success"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "6"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_position_requests_workers_active",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito"
+      },
+      "values": [
+        [
+          1795012423.439,
+          "0"
+        ],
+        [
+          1795012424.439,
+          "0"
+        ],
+        [
+          1795012425.439,
+          "0"
+        ],
+        [
+          1795012426.439,
+          "0"
+        ],
+        [
+          1795012427.439,
+          "0"
+        ],
+        [
+          1795012428.439,
+          "0"
+        ],
+        [
+          1795012429.439,
+          "0"
+        ],
+        [
+          1795012430.439,
+          "0"
+        ],
+        [
+          1795012431.439,
+          "0"
+        ],
+        [
+          1795012432.439,
+          "0"
+        ],
+        [
+          1795012433.439,
+          "0"
+        ],
+        [
+          1795012434.439,
+          "0"
+        ],
+        [
+          1795012435.439,
+          "0"
+        ],
+        [
+          1795012436.439,
+          "0"
+        ],
+        [
+          1795012437.439,
+          "0"
+        ],
+        [
+          1795012438.439,
+          "4"
+        ],
+        [
+          1795012439.439,
+          "4"
+        ],
+        [
+          1795012440.439,
+          "4"
+        ],
+        [
+          1795012441.439,
+          "4"
+        ],
+        [
+          1795012442.439,
+          "4"
+        ],
+        [
+          1795012443.439,
+          "4"
+        ],
+        [
+          1795012444.439,
+          "4"
+        ],
+        [
+          1795012445.439,
+          "4"
+        ],
+        [
+          1795012446.439,
+          "4"
+        ],
+        [
+          1795012447.439,
+          "4"
+        ],
+        [
+          1795012448.439,
+          "4"
+        ],
+        [
+          1795012449.439,
+          "4"
+        ],
+        [
+          1795012450.439,
+          "4"
+        ],
+        [
+          1795012451.439,
+          "4"
+        ],
+        [
+          1795012452.439,
+          "4"
+        ],
+        [
+          1795012453.439,
+          "0"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_positions_saved_total",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito"
+      },
+      "values": [
+        [
+          1795012453.439,
+          "1"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_stale_checks_total",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "dropped"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "1855"
+        ],
+        [
+          1795012439.439,
+          "1855"
+        ],
+        [
+          1795012440.439,
+          "1855"
+        ],
+        [
+          1795012441.439,
+          "1855"
+        ],
+        [
+          1795012442.439,
+          "1855"
+        ],
+        [
+          1795012443.439,
+          "1855"
+        ],
+        [
+          1795012444.439,
+          "1855"
+        ],
+        [
+          1795012445.439,
+          "1855"
+        ],
+        [
+          1795012446.439,
+          "1855"
+        ],
+        [
+          1795012447.439,
+          "1855"
+        ],
+        [
+          1795012448.439,
+          "1855"
+        ],
+        [
+          1795012449.439,
+          "1855"
+        ],
+        [
+          1795012450.439,
+          "1855"
+        ],
+        [
+          1795012451.439,
+          "1855"
+        ],
+        [
+          1795012452.439,
+          "1855"
+        ],
+        [
+          1795012453.439,
+          "2785"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_stale_checks_total",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "duplicate"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "99"
+        ],
+        [
+          1795012439.439,
+          "99"
+        ],
+        [
+          1795012440.439,
+          "99"
+        ],
+        [
+          1795012441.439,
+          "99"
+        ],
+        [
+          1795012442.439,
+          "99"
+        ],
+        [
+          1795012443.439,
+          "99"
+        ],
+        [
+          1795012444.439,
+          "99"
+        ],
+        [
+          1795012445.439,
+          "99"
+        ],
+        [
+          1795012446.439,
+          "99"
+        ],
+        [
+          1795012447.439,
+          "99"
+        ],
+        [
+          1795012448.439,
+          "99"
+        ],
+        [
+          1795012449.439,
+          "99"
+        ],
+        [
+          1795012450.439,
+          "99"
+        ],
+        [
+          1795012451.439,
+          "99"
+        ],
+        [
+          1795012452.439,
+          "99"
+        ],
+        [
+          1795012453.439,
+          "149"
+        ]
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "tripgo_stale_checks_total",
+        "exported_instance": "positions-load-19c054ad08f44fb480a8e29e8e551638",
+        "exported_job": "tripgo/trip-service",
+        "instance": "otel-collector-metrics:8889",
+        "job": "otel-collector",
+        "otel_scope_name": "github.com/fancyqqq/tripgo-avito",
+        "result": "queued"
+      },
+      "values": [
+        [
+          1795012438.439,
+          "46"
+        ],
+        [
+          1795012439.439,
+          "46"
+        ],
+        [
+          1795012440.439,
+          "46"
+        ],
+        [
+          1795012441.439,
+          "46"
+        ],
+        [
+          1795012442.439,
+          "46"
+        ],
+        [
+          1795012443.439,
+          "46"
+        ],
+        [
+          1795012444.439,
+          "46"
+        ],
+        [
+          1795012445.439,
+          "46"
+        ],
+        [
+          1795012446.439,
+          "46"
+        ],
+        [
+          1795012447.439,
+          "46"
+        ],
+        [
+          1795012448.439,
+          "46"
+        ],
+        [
+          1795012449.439,
+          "46"
+        ],
+        [
+          1795012450.439,
+          "46"
+        ],
+        [
+          1795012451.439,
+          "46"
+        ],
+        [
+          1795012452.439,
+          "46"
+        ],
+        [
+          1795012453.439,
+          "66"
+        ]
+      ]
+    }
+  ]
+}
