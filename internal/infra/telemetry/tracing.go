@@ -27,8 +27,8 @@ func (e *cancellableSpanExporter) Shutdown(ctx context.Context) error {
 	return e.delegate.Shutdown(ctx)
 }
 
-func newTraceProvider(exporter sdktrace.SpanExporter, res *resource.Resource) (*sdktrace.TracerProvider, func(context.Context) error) {
-	exportCtx, cancelExports := context.WithCancel(context.Background())
+func newTraceProvider(ctx context.Context, exporter sdktrace.SpanExporter, res *resource.Resource) (*sdktrace.TracerProvider, func(context.Context) error) {
+	exportCtx, cancelExports := context.WithCancel(ctx)
 	wrapped := &cancellableSpanExporter{delegate: exporter, ctx: exportCtx, done: make(chan struct{})}
 	processor := sdktrace.NewBatchSpanProcessor(wrapped)
 	provider := sdktrace.NewTracerProvider(sdktrace.WithSpanProcessor(processor), sdktrace.WithResource(res))

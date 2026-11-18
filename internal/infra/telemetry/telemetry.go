@@ -11,13 +11,12 @@ import (
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/propagation"
 	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
-	"go.opentelemetry.io/otel/sdk/resource"
 )
 
 const metricExportInterval = 15 * time.Second
 
 func Setup(ctx context.Context) (func(context.Context) error, error) {
-	res, err := resource.New(ctx, resource.WithFromEnv(), resource.WithTelemetrySDK())
+	res, err := newResource(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("create resource: %w", err)
 	}
@@ -26,7 +25,7 @@ func Setup(ctx context.Context) (func(context.Context) error, error) {
 	if err != nil {
 		return nil, fmt.Errorf("create trace exporter: %w", err)
 	}
-	tracerProvider, shutdownTracing := newTraceProvider(traceExporter, res)
+	tracerProvider, shutdownTracing := newTraceProvider(ctx, traceExporter, res)
 
 	metricExporter, err := otlpmetrichttp.New(ctx)
 	if err != nil {

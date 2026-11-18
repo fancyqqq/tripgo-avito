@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -21,7 +20,13 @@ import (
 
 func main() {
 	if err := run(); err != nil {
-		log.Fatalf("fatal: %v", err)
+		service := os.Getenv("OTEL_SERVICE_NAME")
+		if service == "" {
+			service = "trip-service"
+		}
+		logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+		logger.Error("service failed", "service", service, "trace_id", "", "span_id", "", "error", err)
+		os.Exit(1)
 	}
 }
 
@@ -40,10 +45,12 @@ func run() (runErr error) {
 		logger.Warn("opentelemetry error", "error", err)
 	}))
 
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	appCtx, cancelApp := context.WithCancel(context.Background())
+	defer cancelApp()
+	ctx, stop := signal.NotifyContext(appCtx, os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	shutdownTelemetry, err := telemetry.Setup(ctx)
+	shutdownTelemetry, err := telemetry.Setup(appCtx)
 	if err != nil {
 		return fmt.Errorf("init telemetry: %w", err)
 	}
@@ -60,7 +67,7 @@ func run() (runErr error) {
 		}
 		flushTelemetry(shutdownCtx, logger, shutdownTelemetry)
 		if c != nil {
-			logger.Info("service stopped", "error", runErr)
+			logger.Info("service stopped")
 		}
 	}()
 
@@ -68,10 +75,10 @@ func run() (runErr error) {
 	if err != nil {
 		return err
 	}
-	if err := c.PositionWorkers.Start(context.Background()); err != nil {
+	if err := c.PositionWorkers.Start(appCtx); err != nil {
 		return fmt.Errorf("start position workers: %w", err)
 	}
-	if err := c.PositionScanner.Start(context.Background()); err != nil {
+	if err := c.PositionScanner.Start(appCtx); err != nil {
 		return fmt.Errorf("start position scanner: %w", err)
 	}
 

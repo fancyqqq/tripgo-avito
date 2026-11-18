@@ -1,5 +1,7 @@
 FROM golang:1.27 AS build
 
+ARG GOPROXY=https://proxy.golang.org,direct
+
 WORKDIR /src
 
 COPY go.mod go.sum ./

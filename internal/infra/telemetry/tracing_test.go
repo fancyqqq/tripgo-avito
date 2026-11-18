@@ -45,7 +45,7 @@ func TestTracingShutdownExportsAndJoinsBatchProcessor(t *testing.T) {
 		exported.Add(int64(len(spans)))
 		return nil
 	}}
-	provider, shutdown := newTraceProvider(exporter, resource.Empty())
+	provider, shutdown := newTraceProvider(context.Background(), exporter, resource.Empty())
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	t.Cleanup(func() { _ = shutdown(ctx) })
@@ -69,7 +69,7 @@ func TestTracingExpiredShutdownCancelsActiveExportAndJoinsProcessor(t *testing.T
 		close(exited)
 		return ctx.Err()
 	}}
-	provider, shutdown := newTraceProvider(exporter, resource.Empty())
+	provider, shutdown := newTraceProvider(context.Background(), exporter, resource.Empty())
 	cleanupCtx, cancelCleanup := context.WithCancel(context.Background())
 	t.Cleanup(func() { cancelCleanup(); _ = shutdown(cleanupCtx) })
 	_, span := provider.Tracer("test").Start(context.Background(), "last task")
@@ -97,7 +97,7 @@ func TestTracingAlreadyExpiredShutdownStillStopsProcessor(t *testing.T) {
 		<-ctx.Done()
 		return ctx.Err()
 	}}
-	provider, shutdown := newTraceProvider(exporter, resource.Empty())
+	provider, shutdown := newTraceProvider(context.Background(), exporter, resource.Empty())
 	ctx, cancel := context.WithDeadline(context.Background(), time.Unix(1, 0))
 	defer cancel()
 	t.Cleanup(func() { _ = shutdown(ctx) })
@@ -105,6 +105,38 @@ func TestTracingAlreadyExpiredShutdownStillStopsProcessor(t *testing.T) {
 	span.End()
 	if err := shutdown(ctx); !errors.Is(err, context.DeadlineExceeded) {
 		t.Fatalf("expired tracing shutdown: %v", err)
+	}
+	waitTraceEvent(t, closed)
+}
+
+func TestTracingUsesApplicationContextForActiveExport(t *testing.T) {
+	t.Parallel()
+	entered, exited, closed := make(chan struct{}), make(chan struct{}), make(chan struct{})
+	exporter := traceExporter{closed: closed, export: func(ctx context.Context, _ []sdktrace.ReadOnlySpan) error {
+		close(entered)
+		<-ctx.Done()
+		close(exited)
+		return ctx.Err()
+	}}
+	appCtx, cancelApp := context.WithCancel(context.Background())
+	defer cancelApp()
+	provider, shutdown := newTraceProvider(appCtx, exporter, resource.Empty())
+	cleanupCtx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	t.Cleanup(func() { cancelApp(); _ = shutdown(cleanupCtx) })
+	_, span := provider.Tracer("test").Start(context.Background(), "last task")
+	span.End()
+	flushed := make(chan struct{})
+	go func() {
+		defer close(flushed)
+		_ = provider.ForceFlush(cleanupCtx)
+	}()
+	waitTraceEvent(t, entered)
+	cancelApp()
+	waitTraceEvent(t, exited)
+	waitTraceEvent(t, flushed)
+	if err := shutdown(cleanupCtx); err != nil {
+		t.Fatal(err)
 	}
 	waitTraceEvent(t, closed)
 }
