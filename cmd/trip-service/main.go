@@ -10,7 +10,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"go.opentelemetry.io/otel"
 
@@ -20,15 +19,13 @@ import (
 	"github.com/fancyqqq/tripgo-avito/internal/infra/telemetry"
 )
 
-const telemetryShutdownTimeout = 5 * time.Second
-
 func main() {
 	if err := run(); err != nil {
 		log.Fatalf("fatal: %v", err)
 	}
 }
 
-func run() error {
+func run() (runErr error) {
 	cfg, err := config.Load()
 	if err != nil {
 		return fmt.Errorf("load config: %w", err)
@@ -50,24 +47,38 @@ func run() error {
 	if err != nil {
 		return fmt.Errorf("init telemetry: %w", err)
 	}
-	defer flushTelemetry(logger, shutdownTelemetry)
+	var c *container.Container
+	var serverDone chan struct{}
+	defer func() {
+		shutdownCtx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout)
+		defer cancel()
+		if c != nil {
+			runErr = errors.Join(runErr, shutdown(shutdownCtx, c.HTTPServer, c.PositionScanner, c.PositionWorkers, c.Close))
+			if serverDone != nil {
+				<-serverDone
+			}
+		}
+		flushTelemetry(shutdownCtx, logger, shutdownTelemetry)
+		if c != nil {
+			logger.Info("service stopped", "error", runErr)
+		}
+	}()
 
-	c, err := container.New(ctx, cfg, logger)
+	c, err = container.New(ctx, cfg, logger)
 	if err != nil {
 		return err
 	}
-	defer c.Close()
-	workerCtx, cancelWorkers := context.WithCancel(context.Background())
-	defer cancelWorkers()
-	if err := c.PositionWorkers.Start(workerCtx); err != nil {
+	if err := c.PositionWorkers.Start(context.Background()); err != nil {
 		return fmt.Errorf("start position workers: %w", err)
 	}
-	if err := c.PositionScanner.Start(workerCtx); err != nil {
+	if err := c.PositionScanner.Start(context.Background()); err != nil {
 		return fmt.Errorf("start position scanner: %w", err)
 	}
 
 	serverErr := make(chan error, 1)
+	serverDone = make(chan struct{})
 	go func() {
+		defer close(serverDone)
 		if err := c.HTTPServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			serverErr <- err
 		}
@@ -83,28 +94,10 @@ func run() error {
 
 	logger.Info("shutdown signal received")
 
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout)
-	defer cancel()
-
-	if err := c.HTTPServer.Shutdown(shutdownCtx); err != nil {
-		_ = c.HTTPServer.Close()
-		return fmt.Errorf("graceful shutdown timed out, forced close: %w", err)
-	}
-	if err := c.PositionScanner.Shutdown(shutdownCtx); err != nil {
-		return fmt.Errorf("position scanner shutdown timed out: %w", err)
-	}
-	if err := c.PositionWorkers.Shutdown(shutdownCtx); err != nil {
-		return fmt.Errorf("position workers shutdown timed out: %w", err)
-	}
-
-	logger.Info("service stopped")
 	return nil
 }
 
-func flushTelemetry(logger *slog.Logger, shutdown func(context.Context) error) {
-	ctx, cancel := context.WithTimeout(context.Background(), telemetryShutdownTimeout)
-	defer cancel()
-
+func flushTelemetry(ctx context.Context, logger *slog.Logger, shutdown func(context.Context) error) {
 	if err := shutdown(ctx); err != nil {
 		logger.Warn("telemetry shutdown failed", "error", err)
 	}
