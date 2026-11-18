@@ -57,6 +57,11 @@ func run() error {
 		return err
 	}
 	defer c.Close()
+	workerCtx, cancelWorkers := context.WithCancel(context.Background())
+	defer cancelWorkers()
+	if err := c.PositionWorkers.Start(workerCtx); err != nil {
+		return fmt.Errorf("start position workers: %w", err)
+	}
 
 	serverErr := make(chan error, 1)
 	go func() {
@@ -81,6 +86,9 @@ func run() error {
 	if err := c.HTTPServer.Shutdown(shutdownCtx); err != nil {
 		_ = c.HTTPServer.Close()
 		return fmt.Errorf("graceful shutdown timed out, forced close: %w", err)
+	}
+	if err := c.PositionWorkers.Shutdown(shutdownCtx); err != nil {
+		return fmt.Errorf("position workers shutdown timed out: %w", err)
 	}
 
 	logger.Info("service stopped")

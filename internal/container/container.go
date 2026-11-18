@@ -31,14 +31,16 @@ import (
 	finishusecase "github.com/fancyqqq/tripgo-avito/internal/usecase/trip/finish"
 	getusecase "github.com/fancyqqq/tripgo-avito/internal/usecase/trip/get"
 	listpositionsusecase "github.com/fancyqqq/tripgo-avito/internal/usecase/trip/listpositions"
+	"github.com/fancyqqq/tripgo-avito/internal/worker/positions"
 )
 
 const meterName = "github.com/fancyqqq/tripgo-avito"
 
 type Container struct {
-	HTTPServer *http.Server
-	pool       *pgxpool.Pool
-	push       *push.Gateway
+	HTTPServer      *http.Server
+	PositionWorkers *positions.Pool
+	pool            *pgxpool.Pool
+	push            *push.Gateway
 }
 
 func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*Container, error) {
@@ -64,10 +66,23 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*Containe
 		pool.Close()
 		return nil, fmt.Errorf("init http metrics: %w", err)
 	}
+	requestMetrics, err := telemetry.NewPositionRequestMetrics(meter)
+	if err != nil {
+		pool.Close()
+		return nil, fmt.Errorf("init position request metrics: %w", err)
+	}
 	pushClient, err := push.New(cfg.Push.HTTPURL, cfg.Push.RequestTimeout)
 	if err != nil {
 		pool.Close()
 		return nil, fmt.Errorf("init push gateway: %w", err)
+	}
+	positionWorkers, err := positions.NewPool(positions.PoolConfig{
+		Workers: cfg.Positions.Workers, QueueSize: cfg.Positions.QueueSize, RequestTimeout: cfg.Push.RequestTimeout,
+	}, pushClient, requestMetrics, otel.Tracer(meterName), logger)
+	if err != nil {
+		pushClient.Close()
+		pool.Close()
+		return nil, fmt.Errorf("init position workers: %w", err)
 	}
 
 	txManager := transaction.New(pool)
@@ -78,7 +93,7 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*Containe
 	getUseCase := getusecase.New(tripRepo)
 	finishUseCase := finishusecase.New(tripRepo, txManager, tripMetrics, now)
 	createPositionUseCase := createpositionusecase.New(
-		tripRepo, positionRepo, txManager, tripMetrics, nil, now,
+		tripRepo, positionRepo, txManager, tripMetrics, positionWorkers, now,
 	)
 	listPositionsUseCase := listpositionsusecase.New(tripRepo, positionRepo)
 
@@ -109,12 +124,14 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*Containe
 			WriteTimeout:      cfg.HTTP.WriteTimeout,
 			IdleTimeout:       cfg.HTTP.IdleTimeout,
 		},
-		pool: pool,
-		push: pushClient,
+		pool:            pool,
+		push:            pushClient,
+		PositionWorkers: positionWorkers,
 	}, nil
 }
 
 func (c *Container) Close() {
+	c.PositionWorkers.Close()
 	c.push.Close()
 	c.pool.Close()
 }
