@@ -62,6 +62,9 @@ func run() error {
 	if err := c.PositionWorkers.Start(workerCtx); err != nil {
 		return fmt.Errorf("start position workers: %w", err)
 	}
+	if err := c.PositionScanner.Start(workerCtx); err != nil {
+		return fmt.Errorf("start position scanner: %w", err)
+	}
 
 	serverErr := make(chan error, 1)
 	go func() {
@@ -86,6 +89,9 @@ func run() error {
 	if err := c.HTTPServer.Shutdown(shutdownCtx); err != nil {
 		_ = c.HTTPServer.Close()
 		return fmt.Errorf("graceful shutdown timed out, forced close: %w", err)
+	}
+	if err := c.PositionScanner.Shutdown(shutdownCtx); err != nil {
+		return fmt.Errorf("position scanner shutdown timed out: %w", err)
 	}
 	if err := c.PositionWorkers.Shutdown(shutdownCtx); err != nil {
 		return fmt.Errorf("position workers shutdown timed out: %w", err)

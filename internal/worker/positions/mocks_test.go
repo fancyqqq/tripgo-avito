@@ -14,6 +14,8 @@ import (
 	reflect "reflect"
 	time "time"
 
+	model "github.com/fancyqqq/tripgo-avito/internal/model"
+	positions "github.com/fancyqqq/tripgo-avito/internal/worker/positions"
 	uuid "github.com/google/uuid"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -102,4 +104,168 @@ func (m *MockrequestMetrics) RequestFinished(ctx context.Context, result string,
 func (mr *MockrequestMetricsMockRecorder) RequestFinished(ctx, result, duration any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RequestFinished", reflect.TypeOf((*MockrequestMetrics)(nil).RequestFinished), ctx, result, duration)
+}
+
+// MockstaleTrips is a mock of staleTrips interface.
+type MockstaleTrips struct {
+	ctrl     *gomock.Controller
+	recorder *MockstaleTripsMockRecorder
+	isgomock struct{}
+}
+
+// MockstaleTripsMockRecorder is the mock recorder for MockstaleTrips.
+type MockstaleTripsMockRecorder struct {
+	mock *MockstaleTrips
+}
+
+// NewMockstaleTrips creates a new mock instance.
+func NewMockstaleTrips(ctrl *gomock.Controller) *MockstaleTrips {
+	mock := &MockstaleTrips{ctrl: ctrl}
+	mock.recorder = &MockstaleTripsMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockstaleTrips) EXPECT() *MockstaleTripsMockRecorder {
+	return m.recorder
+}
+
+// ListStale mocks base method.
+func (m *MockstaleTrips) ListStale(ctx context.Context, staleAfter time.Duration) ([]model.StaleTrip, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListStale", ctx, staleAfter)
+	ret0, _ := ret[0].([]model.StaleTrip)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListStale indicates an expected call of ListStale.
+func (mr *MockstaleTripsMockRecorder) ListStale(ctx, staleAfter any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListStale", reflect.TypeOf((*MockstaleTrips)(nil).ListStale), ctx, staleAfter)
+}
+
+// MockpositionQueue is a mock of positionQueue interface.
+type MockpositionQueue struct {
+	ctrl     *gomock.Controller
+	recorder *MockpositionQueueMockRecorder
+	isgomock struct{}
+}
+
+// MockpositionQueueMockRecorder is the mock recorder for MockpositionQueue.
+type MockpositionQueueMockRecorder struct {
+	mock *MockpositionQueue
+}
+
+// NewMockpositionQueue creates a new mock instance.
+func NewMockpositionQueue(ctrl *gomock.Controller) *MockpositionQueue {
+	mock := &MockpositionQueue{ctrl: ctrl}
+	mock.recorder = &MockpositionQueueMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockpositionQueue) EXPECT() *MockpositionQueueMockRecorder {
+	return m.recorder
+}
+
+// Enqueue mocks base method.
+func (m *MockpositionQueue) Enqueue(ctx context.Context, trip model.StaleTrip) (positions.EnqueueResult, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Enqueue", ctx, trip)
+	ret0, _ := ret[0].(positions.EnqueueResult)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Enqueue indicates an expected call of Enqueue.
+func (mr *MockpositionQueueMockRecorder) Enqueue(ctx, trip any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Enqueue", reflect.TypeOf((*MockpositionQueue)(nil).Enqueue), ctx, trip)
+}
+
+// MockscanMetrics is a mock of scanMetrics interface.
+type MockscanMetrics struct {
+	ctrl     *gomock.Controller
+	recorder *MockscanMetricsMockRecorder
+	isgomock struct{}
+}
+
+// MockscanMetricsMockRecorder is the mock recorder for MockscanMetrics.
+type MockscanMetricsMockRecorder struct {
+	mock *MockscanMetrics
+}
+
+// NewMockscanMetrics creates a new mock instance.
+func NewMockscanMetrics(ctrl *gomock.Controller) *MockscanMetrics {
+	mock := &MockscanMetrics{ctrl: ctrl}
+	mock.recorder = &MockscanMetricsMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockscanMetrics) EXPECT() *MockscanMetricsMockRecorder {
+	return m.recorder
+}
+
+// StaleChecked mocks base method.
+func (m *MockscanMetrics) StaleChecked(ctx context.Context, result string) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "StaleChecked", ctx, result)
+}
+
+// StaleChecked indicates an expected call of StaleChecked.
+func (mr *MockscanMetricsMockRecorder) StaleChecked(ctx, result any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StaleChecked", reflect.TypeOf((*MockscanMetrics)(nil).StaleChecked), ctx, result)
+}
+
+// MockTicker is a mock of Ticker interface.
+type MockTicker struct {
+	ctrl     *gomock.Controller
+	recorder *MockTickerMockRecorder
+	isgomock struct{}
+}
+
+// MockTickerMockRecorder is the mock recorder for MockTicker.
+type MockTickerMockRecorder struct {
+	mock *MockTicker
+}
+
+// NewMockTicker creates a new mock instance.
+func NewMockTicker(ctrl *gomock.Controller) *MockTicker {
+	mock := &MockTicker{ctrl: ctrl}
+	mock.recorder = &MockTickerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockTicker) EXPECT() *MockTickerMockRecorder {
+	return m.recorder
+}
+
+// C mocks base method.
+func (m *MockTicker) C() <-chan time.Time {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "C")
+	ret0, _ := ret[0].(<-chan time.Time)
+	return ret0
+}
+
+// C indicates an expected call of C.
+func (mr *MockTickerMockRecorder) C() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "C", reflect.TypeOf((*MockTicker)(nil).C))
+}
+
+// Stop mocks base method.
+func (m *MockTicker) Stop() {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Stop")
+}
+
+// Stop indicates an expected call of Stop.
+func (mr *MockTickerMockRecorder) Stop() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Stop", reflect.TypeOf((*MockTicker)(nil).Stop))
 }

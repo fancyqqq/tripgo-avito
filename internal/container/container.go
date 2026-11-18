@@ -39,6 +39,7 @@ const meterName = "github.com/fancyqqq/tripgo-avito"
 type Container struct {
 	HTTPServer      *http.Server
 	PositionWorkers *positions.Pool
+	PositionScanner *positions.Scanner
 	pool            *pgxpool.Pool
 	push            *push.Gateway
 }
@@ -71,6 +72,11 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*Containe
 		pool.Close()
 		return nil, fmt.Errorf("init position request metrics: %w", err)
 	}
+	scanMetrics, err := telemetry.NewStaleCheckMetrics(meter)
+	if err != nil {
+		pool.Close()
+		return nil, fmt.Errorf("init stale check metrics: %w", err)
+	}
 	pushClient, err := push.New(cfg.Push.HTTPURL, cfg.Push.RequestTimeout)
 	if err != nil {
 		pool.Close()
@@ -88,6 +94,15 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*Containe
 	txManager := transaction.New(pool)
 	tripRepo := triprepository.New(pool, cfg.Database.QueryTimeout)
 	positionRepo := positionrepository.New(pool, cfg.Database.QueryTimeout)
+	positionScanner, err := positions.NewScanner(positions.ScannerConfig{
+		CheckInterval: cfg.Positions.CheckInterval, StaleAfter: cfg.Positions.StaleAfter,
+	}, tripRepo, positionWorkers, scanMetrics, otel.Tracer(meterName), logger, positions.NewTicker)
+	if err != nil {
+		positionWorkers.Close()
+		pushClient.Close()
+		pool.Close()
+		return nil, fmt.Errorf("init position scanner: %w", err)
+	}
 
 	createUseCase := createusecase.New(tripRepo, idempotency.NewIdempotencyRepository(pool, cfg.Database.QueryTimeout), txManager, tripMetrics, now)
 	getUseCase := getusecase.New(tripRepo)
@@ -127,10 +142,12 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*Containe
 		pool:            pool,
 		push:            pushClient,
 		PositionWorkers: positionWorkers,
+		PositionScanner: positionScanner,
 	}, nil
 }
 
 func (c *Container) Close() {
+	c.PositionScanner.Close()
 	c.PositionWorkers.Close()
 	c.push.Close()
 	c.pool.Close()

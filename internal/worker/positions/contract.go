@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+
+	"github.com/fancyqqq/tripgo-avito/internal/model"
 )
 
 type (
@@ -15,5 +17,18 @@ type (
 	requestMetrics interface {
 		RequestDropped(ctx context.Context)
 		RequestFinished(ctx context.Context, result string, duration time.Duration)
+	}
+	staleTrips interface {
+		ListStale(ctx context.Context, staleAfter time.Duration) ([]model.StaleTrip, error)
+	}
+	positionQueue interface {
+		Enqueue(ctx context.Context, trip model.StaleTrip) (EnqueueResult, error)
+	}
+	scanMetrics interface {
+		StaleChecked(ctx context.Context, result string)
+	}
+	Ticker interface {
+		C() <-chan time.Time
+		Stop()
 	}
 )
