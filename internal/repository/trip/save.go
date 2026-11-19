@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 
 	"github.com/fancyqqq/tripgo-avito/internal/domain/trip"
@@ -33,6 +35,7 @@ func (r *Repository) Create(ctx context.Context, t trip.Trip) error {
 			string(t.Status),
 			t.StartedAt,
 			t.FinishedAt,
+			t.LastPositionAt,
 		).
 		ToSql()
 	if err != nil {
@@ -101,5 +104,25 @@ func (r *Repository) AddStatusChange(ctx context.Context, change trip.StatusChan
 		return fmt.Errorf("insert status change: %w", err)
 	}
 
+	return nil
+}
+
+func (r *Repository) UpdateLastPositionAt(ctx context.Context, id uuid.UUID, recordedAt time.Time) error {
+	ctx, cancel := context.WithTimeout(ctx, r.queryTimeout)
+	defer cancel()
+
+	query, args, err := psql.Update("trips").
+		Set("last_position_at", sq.Expr("GREATEST(last_position_at, ?)", recordedAt)).
+		Set("updated_at", sq.Expr("now()")).Where(sq.Eq{"id": id}).ToSql()
+	if err != nil {
+		return fmt.Errorf("build update last position query: %w", err)
+	}
+	tag, err := transaction.GetQuerier(ctx, r.pool).Exec(ctx, query, args...)
+	if err != nil {
+		return fmt.Errorf("update last position: %w", err)
+	}
+	if tag.RowsAffected() == 0 {
+		return trip.ErrTripNotFound
+	}
 	return nil
 }

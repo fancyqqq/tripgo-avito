@@ -9,3 +9,4 @@ bin
 **/*_test.go
 trip.json
 README.md
+reports

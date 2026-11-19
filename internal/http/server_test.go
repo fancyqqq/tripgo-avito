@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
@@ -17,8 +18,10 @@ import (
 	httptransport "github.com/fancyqqq/tripgo-avito/internal/http"
 	"github.com/fancyqqq/tripgo-avito/internal/http/health"
 	"github.com/fancyqqq/tripgo-avito/internal/http/trip/create"
+	"github.com/fancyqqq/tripgo-avito/internal/http/trip/createposition"
 	"github.com/fancyqqq/tripgo-avito/internal/http/trip/finish"
 	"github.com/fancyqqq/tripgo-avito/internal/http/trip/get"
+	"github.com/fancyqqq/tripgo-avito/internal/http/trip/listpositions"
 	"github.com/fancyqqq/tripgo-avito/internal/model"
 )
 
@@ -30,6 +33,18 @@ func (createStub) Execute(_ context.Context, in model.CreateTrip) (model.CreateT
 
 type tripStub struct {
 	status trip.Status
+}
+
+type positionStub struct{}
+
+type listPositionsStub struct{}
+
+func (listPositionsStub) Execute(context.Context, uuid.UUID) ([]trip.Position, error) {
+	return []trip.Position{}, nil
+}
+
+func (positionStub) Execute(_ context.Context, in model.CreatePosition) (trip.Position, error) {
+	return trip.Position{ID: 1, TripID: in.TripID, Coordinates: in.Coordinates, RecordedAt: in.RecordedAt}, nil
 }
 
 func (s tripStub) Execute(_ context.Context, id uuid.UUID) (trip.Trip, error) {
@@ -50,6 +65,8 @@ func newRouter(pingErr error) http.Handler {
 		create.New(createStub{}, logger),
 		get.New(tripStub{status: trip.StatusActive}, logger),
 		finish.New(tripStub{status: trip.StatusCompleted}, logger),
+		createposition.New(positionStub{}, logger),
+		listpositions.New(listPositionsStub{}, logger),
 		health.New(pingerStub{err: pingErr}, time.Second, logger),
 		logger,
 	)
@@ -68,6 +85,7 @@ func TestRoutes(t *testing.T) {
 		wantStatus int
 	}{
 		{name: "get trip", method: http.MethodGet, path: "/api/v1/trips/" + id, wantStatus: http.StatusOK},
+		{name: "list positions", method: http.MethodGet, path: "/api/v1/trips/" + id + "/positions", wantStatus: http.StatusOK},
 		{name: "finish trip", method: http.MethodPost, path: "/api/v1/trips/" + id + "/finish", wantStatus: http.StatusOK},
 		{name: "health", method: http.MethodGet, path: "/health", wantStatus: http.StatusOK},
 		{name: "ready", method: http.MethodGet, path: "/ready", wantStatus: http.StatusOK},
@@ -96,6 +114,8 @@ func TestInvalidTripIDReturnsBadRequest(t *testing.T) {
 	}{
 		{method: http.MethodGet, path: "/api/v1/trips/not-a-uuid"},
 		{method: http.MethodPost, path: "/api/v1/trips/not-a-uuid/finish"},
+		{method: http.MethodPost, path: "/api/v1/trips/not-a-uuid/positions"},
+		{method: http.MethodGet, path: "/api/v1/trips/not-a-uuid/positions"},
 	} {
 		t.Run(tc.method+" "+tc.path, func(t *testing.T) {
 			t.Parallel()
@@ -162,5 +182,24 @@ func TestHealthDoesNotDependOnDatabase(t *testing.T) {
 
 	if rec.Code != http.StatusOK {
 		t.Fatalf("status = %d, want %d", rec.Code, http.StatusOK)
+	}
+}
+
+func TestCreatePositionRoute(t *testing.T) {
+	t.Parallel()
+
+	id := uuid.New()
+	body := `{"coordinates":{"latitude":0,"longitude":0},"recorded_at":"2026-11-17T10:00:00Z"}`
+	rec := httptest.NewRecorder()
+	newRouter(nil).ServeHTTP(rec, httptest.NewRequest(http.MethodPost, "/api/v1/trips/"+id.String()+"/positions", strings.NewReader(body)))
+	if rec.Code != http.StatusCreated {
+		t.Fatalf("status = %d, want 201, body: %s", rec.Code, rec.Body)
+	}
+	var position generated.TripPosition
+	if err := json.NewDecoder(rec.Body).Decode(&position); err != nil {
+		t.Fatalf("decode position: %v", err)
+	}
+	if position.TripId != id || position.Id != 1 {
+		t.Fatalf("position = %+v", position)
 	}
 }

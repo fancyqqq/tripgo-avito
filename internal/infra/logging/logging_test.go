@@ -50,7 +50,7 @@ func TestNewAddsServiceAndTraceIDs(t *testing.T) {
 	}
 }
 
-func TestNewWithoutSpanHasNoTraceIDs(t *testing.T) {
+func TestNewWithoutSpanHasEmptyTraceIDs(t *testing.T) {
 	t.Parallel()
 
 	var buf bytes.Buffer
@@ -62,11 +62,11 @@ func TestNewWithoutSpanHasNoTraceIDs(t *testing.T) {
 	logger.InfoContext(context.Background(), "hello")
 
 	entry := decode(t, &buf)
-	if _, ok := entry["trace_id"]; ok {
-		t.Fatalf("unexpected trace_id in %v", entry)
+	if entry["trace_id"] != "" {
+		t.Fatalf("trace_id must be present and empty: %v", entry)
 	}
-	if _, ok := entry["span_id"]; ok {
-		t.Fatalf("unexpected span_id in %v", entry)
+	if entry["span_id"] != "" {
+		t.Fatalf("span_id must be present and empty: %v", entry)
 	}
 }
 

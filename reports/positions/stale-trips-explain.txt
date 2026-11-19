@@ -1,0 +1,51 @@
+Stale trip selection: EXPLAIN (ANALYZE, BUFFERS)
+
+PostgreSQL: 16.10
+Schema: isolated temporary schema, migrations 00001 through 00005.
+Dataset: 20000 trips; 10000 completed, 9950 fresh active, 50 stale active.
+The stale set includes 25 trips without positions and 25 with old positions.
+ANALYZE trips was executed before measuring. No scan types were disabled.
+Threshold parameter: 60 seconds.
+
+Both executions use Bitmap Index Scan on trips_active_last_position_idx,
+then Bitmap Heap Scan and Sort. Neither plan uses Seq Scan.
+Execution times describe this local, cached dataset only.
+
+SELECT id, driver_id, COALESCE(last_position_at, started_at) AS last_activity_at
+FROM trips
+WHERE status = 'active'
+  AND COALESCE(last_position_at, started_at) < now() - ($1::double precision * interval '1 second')
+ORDER BY COALESCE(last_position_at, started_at) ASC, id ASC;
+
+PREPARE
+Default planner, first prepared execution
+Sort  (cost=800.80..809.14 rows=3333 width=40) (actual time=0.089..0.090 rows=50 loops=1)
+  Sort Key: (COALESCE(last_position_at, started_at)), id
+  Sort Method: quicksort  Memory: 28kB
+  Buffers: shared hit=10
+  ->  Bitmap Heap Scan on trips  (cost=122.12..605.78 rows=3333 width=40) (actual time=0.026..0.035 rows=50 loops=1)
+        Recheck Cond: ((COALESCE(last_position_at, started_at) < (now() - '00:01:00'::interval)) AND (status = 'active'::text))
+        Heap Blocks: exact=2
+        Buffers: shared hit=4
+        ->  Bitmap Index Scan on trips_active_last_position_idx  (cost=0.00..121.29 rows=3333 width=0) (actual time=0.017..0.017 rows=50 loops=1)
+              Index Cond: (COALESCE(last_position_at, started_at) < (now() - '00:01:00'::interval))
+              Buffers: shared hit=2
+Planning:
+  Buffers: shared hit=161
+Planning Time: 0.946 ms
+Execution Time: 0.136 ms
+SET
+Generic prepared plan
+Sort  (cost=809.14..817.47 rows=3333 width=40) (actual time=0.032..0.034 rows=50 loops=1)
+  Sort Key: (COALESCE(last_position_at, started_at)), id
+  Sort Method: quicksort  Memory: 28kB
+  Buffers: shared hit=4
+  ->  Bitmap Heap Scan on trips  (cost=122.12..614.12 rows=3333 width=40) (actual time=0.015..0.020 rows=50 loops=1)
+        Recheck Cond: ((COALESCE(last_position_at, started_at) < (now() - ($1 * '00:00:01'::interval))) AND (status = 'active'::text))
+        Heap Blocks: exact=2
+        Buffers: shared hit=4
+        ->  Bitmap Index Scan on trips_active_last_position_idx  (cost=0.00..121.29 rows=3333 width=0) (actual time=0.012..0.012 rows=50 loops=1)
+              Index Cond: (COALESCE(last_position_at, started_at) < (now() - ($1 * '00:00:01'::interval)))
+              Buffers: shared hit=2
+Planning Time: 0.052 ms
+Execution Time: 0.071 ms

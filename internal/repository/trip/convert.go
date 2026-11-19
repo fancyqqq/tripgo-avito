@@ -22,6 +22,7 @@ func scanTrip(row pgx.Row) (trip.Trip, error) {
 		&status,
 		&t.StartedAt,
 		&t.FinishedAt,
+		&t.LastPositionAt,
 	)
 	if err != nil {
 		return trip.Trip{}, err
@@ -32,6 +33,10 @@ func scanTrip(row pgx.Row) (trip.Trip, error) {
 	if t.FinishedAt != nil {
 		finishedAt := t.FinishedAt.UTC()
 		t.FinishedAt = &finishedAt
+	}
+	if t.LastPositionAt != nil {
+		lastPositionAt := t.LastPositionAt.UTC()
+		t.LastPositionAt = &lastPositionAt
 	}
 	return t, nil
 }

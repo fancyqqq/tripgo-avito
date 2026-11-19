@@ -8,8 +8,17 @@ GOLANGCI_LINT := $(CURDIR)/bin/golangci-lint/$(GOLANGCI_LINT_VERSION)/golangci-l
 GREMLINS_VERSION := v0.6.0
 GREMLINS := $(CURDIR)/bin/gremlins/$(GREMLINS_VERSION)/gremlins
 MUTATION_REPORT_DIR ?= reports/mutation/latest
+IMAGE ?= trip-service:lab3
+DOCKER_NODE ?= tripgo-local-control-plane
+DOCKER_NETWORK ?= kind
+DOCKER_CONTAINER_NAME ?= trip-service
+DOCKER_HTTP_PORT ?= 8080
+DOCKER_ENV_FILE ?= .env
+DOCKER_DATABASE_URL ?= postgres://tripgo:tripgo@$(DOCKER_NODE):30303/tripgo?sslmode=disable
+DOCKER_PUSH_HTTP_URL ?= http://$(DOCKER_NODE):30308
+DOCKER_OTLP_ENDPOINT ?= http://$(DOCKER_NODE):30306
 
-.PHONY: build run migrate migrate-down migrate-status generate docker-build docker-run lint fmt test test-integration cover test-mutation
+.PHONY: build run migrate migrate-down migrate-status generate docker-build docker-run lint fmt test test-integration test-position-pool-load cover test-mutation
 
 run:
 	go run ./cmd/trip-service
@@ -31,18 +40,21 @@ generate:
 		-generate types,chi-server \
 		-package generated \
 		-o internal/generated/api.gen.go \
-		-include-operation-ids createTrip,getTrip,finishTrip,health,ready \
+		-include-operation-ids createTrip,getTrip,finishTrip,createTripPosition,listTripPositions,health,ready \
 		$(OPENAPI_SPEC)
 	go generate ./...
 
 docker-build:
-	docker build -f deploy/Dockerfile -t trip-service:lab1 .
+	docker build -f deploy/Dockerfile -t "$(IMAGE)" .
 
 docker-run:
-	docker run --rm --name trip-service --network kind -p 8080:8080 \
-		--env-file .env \
-		-e DATABASE_URL='postgres://tripgo:tripgo@tripgo-local-control-plane:30203/tripgo?sslmode=disable' \
-		trip-service:lab1
+	docker run --rm --name "$(DOCKER_CONTAINER_NAME)" --network "$(DOCKER_NETWORK)" -p "$(DOCKER_HTTP_PORT):8080" \
+		--env-file "$(DOCKER_ENV_FILE)" \
+		-e HTTP_ADDR=:8080 \
+		-e DATABASE_URL='$(DOCKER_DATABASE_URL)' \
+		-e PUSH_HTTP_URL='$(DOCKER_PUSH_HTTP_URL)' \
+		-e OTEL_EXPORTER_OTLP_ENDPOINT='$(DOCKER_OTLP_ENDPOINT)' \
+		"$(IMAGE)"
 
 $(GOLANGCI_LINT):
 	mkdir -p "$(@D)"
@@ -61,6 +73,9 @@ test:
 
 test-integration:
 	go test -race -count=1 -tags integration ./...
+
+test-position-pool-load: build
+	python3 scripts/position-pool-load.py
 
 $(GREMLINS):
 	GOBIN="$(@D)" go install github.com/go-gremlins/gremlins/cmd/gremlins@$(GREMLINS_VERSION)

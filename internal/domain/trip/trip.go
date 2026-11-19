@@ -1,6 +1,7 @@
 package trip
 
 import (
+	"math"
 	"time"
 
 	"github.com/google/uuid"
@@ -19,15 +20,16 @@ type Point struct {
 }
 
 type Trip struct {
-	ID         uuid.UUID
-	UserID     uuid.UUID
-	DriverID   uuid.UUID
-	StartPoint Point
-	EndPoint   Point
-	Price      int64
-	Status     Status
-	StartedAt  time.Time
-	FinishedAt *time.Time
+	ID             uuid.UUID
+	UserID         uuid.UUID
+	DriverID       uuid.UUID
+	StartPoint     Point
+	EndPoint       Point
+	Price          int64
+	Status         Status
+	StartedAt      time.Time
+	FinishedAt     *time.Time
+	LastPositionAt *time.Time
 }
 
 type StatusChange struct {
@@ -76,10 +78,10 @@ func (t *Trip) Finish(at time.Time) error {
 }
 
 func (p Point) validate(field string) error {
-	if p.Latitude < -90 || p.Latitude > 90 {
+	if math.IsNaN(p.Latitude) || p.Latitude < -90 || p.Latitude > 90 {
 		return &ValidationError{Field: field + ".latitude", Reason: "must be between -90 and 90"}
 	}
-	if p.Longitude < -180 || p.Longitude > 180 {
+	if math.IsNaN(p.Longitude) || p.Longitude < -180 || p.Longitude > 180 {
 		return &ValidationError{Field: field + ".longitude", Reason: "must be between -180 and 180"}
 	}
 	return nil

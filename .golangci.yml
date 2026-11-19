@@ -96,6 +96,12 @@ linters:
 
   exclusions:
     generated: lax
+    rules:
+      - path: ^internal/gateway/push/request\.go$
+        linters:
+          - gosec
+        text: '^G704:'
+        source: '(http\.NewRequestWithContext\(ctx, http\.MethodPost, g\.endpoint, bytes\.NewReader\(payload\)\)|g\.client\.Do\(request\))'
     presets:
       - comments
       - common-false-positives
