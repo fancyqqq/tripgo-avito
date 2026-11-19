@@ -140,4 +140,4 @@ make docker-run
 
 Образ `trip-service:lab3` запускается от nonroot в сети `kind`. Через узел `tripgo-local-control-plane` используются NodePort: БД `30303`, Push HTTP `30308`, OTLP/HTTP `30306`. Адреса можно переопределить переменными `DOCKER_DATABASE_URL`, `DOCKER_PUSH_HTTP_URL`, `DOCKER_OTLP_ENDPOINT`; внешний порт — через `DOCKER_HTTP_PORT`.
 
-[EXPLAIN на 20 000 поездках](reports/positions/stale-trips-explain.txt) · [Итоговая сверка](reports/positions/final-checks.md) · [Описание PR](reports/positions/pull-request.md)
+[EXPLAIN на 20 000 поездках](reports/positions/stale-trips-explain.txt)
